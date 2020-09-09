@@ -132,6 +132,8 @@ func NewCmdRoot(f *cmdutil.Factory, version, buildDate string) *cobra.Command {
 	cmd.AddCommand(issueCmd.NewCmdIssue(&repoResolvingCmdFactory))
 	cmd.AddCommand(repoCmd.NewCmdRepo(&repoResolvingCmdFactory))
 
+	InitCompletions(&repoResolvingCmdFactory, cmd)
+
 	return cmd
 }
 
