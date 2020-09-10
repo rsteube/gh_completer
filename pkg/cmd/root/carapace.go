@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/cli/cli/internal/config"
 	"github.com/cli/cli/pkg/cmdutil"
 	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
@@ -50,20 +51,20 @@ func initAuth(f *cmdutil.Factory, c *cobra.Command) {
 
 	if cmd, _, err := rootCmd.Find([]string{"auth", "logout"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"hostname": carapace.ActionHosts(),
+			"hostname": ActionConfigHosts(),
 		})
 	}
 
 	if cmd, _, err := rootCmd.Find([]string{"auth", "refresh"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"hostname": carapace.ActionHosts(),
+			"hostname": ActionConfigHosts(),
 			"scopes":   ActionAuthScopes(),
 		})
 	}
 
-	if cmd, _, err := rootCmd.Find([]string{"auth", "logout"}); err == nil {
+	if cmd, _, err := rootCmd.Find([]string{"auth", "status"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"hostname": carapace.ActionHosts(),
+			"hostname": ActionConfigHosts(),
 		})
 	}
 
@@ -128,7 +129,7 @@ func initHelp(f *cmdutil.Factory, c *cobra.Command) {}
 func initIssue(f *cmdutil.Factory, c *cobra.Command) {
 	if cmd, _, err := rootCmd.Find([]string{"issue"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"repo": ActionRepos(),
+			"repo": ActionRepositories(),
 		})
 	}
 
@@ -140,7 +141,7 @@ func initIssue(f *cmdutil.Factory, c *cobra.Command) {
 
 	if cmd, _, err := rootCmd.Find([]string{"issue", "create"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"assignee":  ActionContributors(),
+			"assignee":  ActionAssignableUsers(),
 			"label":     ActionLabels(), // TODO ActionMultiParts
 			"milestone": ActionMilestones(),
 		})
@@ -148,10 +149,10 @@ func initIssue(f *cmdutil.Factory, c *cobra.Command) {
 
 	if cmd, _, err := rootCmd.Find([]string{"issue", "list"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"assignee":  ActionContributors(),
-			"author":    ActionContributors(),
+			"assignee":  ActionAssignableUsers(),
+			"author":    ActionMentionableUsers(),
 			"label":     ActionLabels(), // TODO ActionMultiParts
-			"mention":   ActionContributors(),
+			"mention":   ActionAssignableUsers(),
 			"milestone": ActionMilestones(),
 			"state":     carapace.ActionValues("open", "closed", "all"),
 		})
@@ -173,7 +174,7 @@ func initIssue(f *cmdutil.Factory, c *cobra.Command) {
 func initPr(f *cmdutil.Factory, c *cobra.Command) {
 	if cmd, _, err := rootCmd.Find([]string{"pr"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"repo": ActionRepos(),
+			"repo": ActionRepositories(),
 		})
 	}
 
@@ -191,12 +192,12 @@ func initPr(f *cmdutil.Factory, c *cobra.Command) {
 
 	if cmd, _, err := rootCmd.Find([]string{"pr", "create"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"assignee":  ActionContributors(),
+			"assignee":  ActionAssignableUsers(),
 			"base":      ActionBranches(),
 			"label":     ActionLabels(),
 			"milestone": ActionMilestones(),
 			// TODO "project": ActionProjects(),
-			"reviewer": ActionContributors(),
+			"reviewer": ActionAssignableUsers(),
 		})
 	}
 
@@ -211,7 +212,7 @@ func initPr(f *cmdutil.Factory, c *cobra.Command) {
 
 	if cmd, _, err := rootCmd.Find([]string{"pr", "list"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"assignee": ActionContributors(),
+			"assignee": ActionAssignableUsers(),
 			"base":     ActionBranches(),
 			"label":    ActionLabels(),
 			"state":    carapace.ActionValues("open", "closed", "merged", "all"),
@@ -252,7 +253,7 @@ func initPr(f *cmdutil.Factory, c *cobra.Command) {
 func initRepo(f *cmdutil.Factory, c *cobra.Command) {
 	if cmd, _, err := rootCmd.Find([]string{"repo", "clone"}); err == nil {
 		carapace.Gen(cmd).PositionalCompletion(
-			ActionRepos(),
+			ActionRepositories(),
 			carapace.ActionDirectories(),
 		)
 	}
@@ -260,56 +261,52 @@ func initRepo(f *cmdutil.Factory, c *cobra.Command) {
 	if cmd, _, err := rootCmd.Find([]string{"repo", "create"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
 			// TODO team
-			"template": ActionRepos(),
+			"template": ActionRepositories(),
 		})
 	}
 
 	if cmd, _, err := rootCmd.Find([]string{"repo", "fork"}); err == nil {
 		carapace.Gen(cmd).PositionalCompletion(
-			ActionRepos(),
+			ActionRepositories(),
 		)
 	}
 
 	if cmd, _, err := rootCmd.Find([]string{"repo", "view"}); err == nil {
 		carapace.Gen(cmd).PositionalCompletion(
-			ActionRepos(),
+			ActionRepositories(),
 		)
 	}
 }
 
+func ActionConfigHosts() carapace.Action {
+	return carapace.ActionCallback(func(args []string) carapace.Action {
+		if config, err := config.ParseDefaultConfig(); err != nil {
+			return carapace.ActionMessage(err.Error())
+		} else {
+			if hosts, err := config.Hosts(); err != nil {
+				return carapace.ActionMessage(err.Error())
+			} else {
+				return carapace.ActionValues(hosts...)
+			}
+		}
+	})
+}
+
 func ActionAliases(f *cmdutil.Factory) carapace.Action {
 	return carapace.ActionCallback(func(args []string) carapace.Action {
-		cfg, err := f.Config()
-		if err != nil {
+		if config, err := config.ParseDefaultConfig(); err != nil {
 			return carapace.ActionMessage(err.Error())
+		} else {
+			if aliasCfg, err := config.Aliases(); err != nil {
+				return carapace.ActionMessage(err.Error())
+			} else {
+				values := make([]string, 0)
+				for key, value := range aliasCfg.All() {
+					values = append(values, key, value)
+				}
+				return carapace.ActionValuesDescribed(values...)
+			}
 		}
-		aliasCfg, err := cfg.Aliases()
-		if err != nil {
-			return carapace.ActionMessage(err.Error())
-		}
-		values := make([]string, 0)
-		for key, value := range aliasCfg.All() {
-			values = append(values, key, value)
-		}
-		return carapace.ActionValuesDescribed(values...)
-	})
-
-}
-
-type contributor struct {
-	Login         string
-	Contributions int
-}
-
-func ActionContributors() carapace.Action {
-	var contributors []contributor
-	return ApiAction("/repos/:owner/:repo/contributors?per_page=100", &contributors, func() carapace.Action {
-		vals := make([]string, len(contributors)*2)
-		for index, contributor := range contributors {
-			vals[index*2] = contributor.Login
-			vals[index*2+1] = fmt.Sprintf("%v contributions", contributor.Contributions)
-		}
-		return carapace.ActionValuesDescribed(vals...)
 	})
 }
 
@@ -318,52 +315,59 @@ type label struct {
 	Description string
 }
 
+type labelsQuery struct {
+	Data struct {
+		Repository struct {
+			Labels struct {
+				Nodes []label
+			}
+		}
+	}
+}
+
 func ActionLabels() carapace.Action {
-	var labels []label
-	return ApiAction("/repos/:owner/:repo/labels?per_page=100", &labels, func() carapace.Action {
-		vals := make([]string, len(labels)*2)
-		for index, label := range labels {
-			vals[index*2] = label.Name
-			vals[index*2+1] = label.Description
-		}
-		return carapace.ActionValuesDescribed(vals...)
-	})
-}
-
-type milestone struct {
-	Title       string
-	Description string
-}
-
-func ActionMilestones() carapace.Action {
-	var milestones []milestone
-	return ApiAction("/repos/:owner/:repo/milestones?per_page=100", &milestones, func() carapace.Action {
-		vals := make([]string, len(milestones)*2)
-		for index, label := range milestones {
-			vals[index*2] = label.Title
-			vals[index*2+1] = label.Description
-		}
-		return carapace.ActionValuesDescribed(vals...)
-	})
-}
-
-type repo struct {
-	FullName    string `json:"full_name"`
-	Description string
-}
-
-func ActionRepos() carapace.Action {
 	return carapace.ActionCallback(func(args []string) carapace.Action {
-		owner := ":owner"
+		var queryResult labelsQuery
+		return GraphQlAction(`repository(owner: $owner, name: $repo){ labels(first: 100) { nodes { name, description } } }`, &queryResult, func() carapace.Action {
+			labels := queryResult.Data.Repository.Labels.Nodes
+			vals := make([]string, len(labels)*2)
+			for index, label := range labels {
+				vals[index*2] = label.Name
+				vals[index*2+1] = label.Description
+			}
+			return carapace.ActionValuesDescribed(vals...)
+		})
+	})
+}
+
+type repository struct {
+	NameWithOwner string
+	Description   string
+}
+
+type repositoryQuery struct {
+	Data struct {
+		RepositoryOwner struct {
+			Repositories struct {
+				Nodes []repository
+			}
+		}
+	}
+}
+
+func ActionRepositories() carapace.Action {
+	return carapace.ActionCallback(func(args []string) carapace.Action {
+		owner := "$owner"
 		if carapace.CallbackValue != "" {
-			owner = strings.Split(carapace.CallbackValue, "/")[0]
+			owner = fmt.Sprintf(`"%v"`, strings.Split(carapace.CallbackValue, "/")[0])
 		}
 
-		var repos []repo
-		return ApiAction(fmt.Sprintf("/users/%v/repos?per_page=100", owner), &repos, func() carapace.Action {
-			vals := make([]string, len(repos)*2)
-			for index, repo := range repos {
-				vals[index*2] = repo.FullName
+		var queryResult repositoryQuery
+		return GraphQlAction(fmt.Sprintf(`repositoryOwner(login: %v){ repositories(first: 100) { nodes { nameWithOwner, description }  }  }`, owner), &queryResult, func() carapace.Action {
+			repositories := queryResult.Data.RepositoryOwner.Repositories.Nodes
+			vals := make([]string, len(repositories)*2)
+			for index, repo := range repositories {
+				vals[index*2] = repo.NameWithOwner
 				vals[index*2+1] = repo.Description
 			}
 			return carapace.ActionValuesDescribed(vals...)
@@ -372,22 +376,118 @@ func ActionRepos() carapace.Action {
 	})
 }
 
-type issue struct {
-	Number      int
+type mentionableUsersQuery struct {
+	Data struct {
+		Repository struct {
+			MentionableUsers struct {
+				Nodes []user
+			}
+		}
+	}
+}
+
+func ActionMentionableUsers() carapace.Action {
+	return carapace.ActionCallback(func(args []string) carapace.Action {
+		var queryResult mentionableUsersQuery
+		return GraphQlAction(`repository(owner: $owner, name: $repo){ mentionableUsers(first: 100) { nodes { login, name } } }`, &queryResult, func() carapace.Action {
+			users := queryResult.Data.Repository.MentionableUsers.Nodes
+			vals := make([]string, len(users)*2)
+			for index, user := range users {
+				vals[index*2] = user.Login
+				vals[index*2+1] = user.Name
+			}
+			return carapace.ActionValuesDescribed(vals...)
+		})
+	})
+}
+
+type user struct {
+	Login string
+	Name  string
+}
+
+type assignableUserQuery struct {
+	Data struct {
+		Repository struct {
+			AssignableUsers struct {
+				Nodes []user
+			}
+		}
+	}
+}
+
+func ActionAssignableUsers() carapace.Action {
+	return carapace.ActionCallback(func(args []string) carapace.Action {
+		var queryResult assignableUserQuery
+		return GraphQlAction(`repository(owner: $owner, name: $repo){ assignableUsers(first: 100) { nodes { login, name } } }`, &queryResult, func() carapace.Action {
+			users := queryResult.Data.Repository.AssignableUsers.Nodes
+			vals := make([]string, len(users)*2)
+			for index, user := range users {
+				vals[index*2] = user.Login
+				vals[index*2+1] = user.Name
+			}
+			return carapace.ActionValuesDescribed(vals...)
+		})
+	})
+}
+
+type milestone struct {
 	Title       string
-	PullRequest struct{ Url string } `json:"pull_request"`
+	Description string
+}
+
+type milestonQuery struct {
+	Data struct {
+		Repository struct {
+			Milestones struct {
+				Nodes []milestone
+			}
+		}
+	}
+}
+
+func ActionMilestones() carapace.Action {
+	return carapace.ActionCallback(func(args []string) carapace.Action {
+		var queryResult milestonQuery
+		return GraphQlAction(`repository(owner: $owner, name: $repo){ milestones(first: 100) { nodes { title, description } } }`, &queryResult, func() carapace.Action {
+			milestones := queryResult.Data.Repository.Milestones.Nodes
+			vals := make([]string, len(milestones)*2)
+			for index, repo := range milestones {
+				vals[index*2] = repo.Title
+				vals[index*2+1] = repo.Description
+			}
+			return carapace.ActionValuesDescribed(vals...)
+		})
+	})
+}
+
+type issue struct {
+	Number int
+	Title  string
+}
+
+type issueQuery struct {
+	Data struct {
+		Repository struct {
+			Issues struct {
+				Nodes []issue
+			}
+		}
+	}
 }
 
 func ActionIssues(state string) carapace.Action {
-	var issues []issue
-	return ApiAction(fmt.Sprintf("/repos/:owner/:repo/issues?state=%v&per_page=100", state), &issues, func() carapace.Action {
-		vals := make([]string, 0)
-		for _, issue := range issues {
-			if issue.PullRequest.Url == "" { // no pullrequest
-				vals = append(vals, strconv.Itoa(issue.Number), issue.Title)
+	return carapace.ActionCallback(func(args []string) carapace.Action {
+		var queryResult issueQuery
+		return GraphQlAction(fmt.Sprintf(`repository(owner: $owner, name: $repo){ issues(first: 100, states: %v) { nodes { number, title } } }`, strings.ToUpper(state)), &queryResult, func() carapace.Action {
+			issues := queryResult.Data.Repository.Issues.Nodes
+			vals := make([]string, len(issues)*2)
+			for index, issue := range issues {
+				vals[index*2] = strconv.Itoa(issue.Number)
+				vals[index*2+1] = issue.Title // TODO shorten title
 			}
-		}
-		return carapace.ActionValuesDescribed(vals...)
+			return carapace.ActionValuesDescribed(vals...)
+		})
 	})
 }
 
@@ -396,32 +496,58 @@ type pullrequest struct {
 	Title  string
 }
 
-func ActionPullRequests(state string) carapace.Action {
-	var pullrequests []pullrequest
-	return ApiAction(fmt.Sprintf("/repos/:owner/:repo/pulls?state=%v&per_page=100", state), &pullrequests, func() carapace.Action {
-		vals := make([]string, len(pullrequests)*2)
-		for index, pull := range pullrequests {
-			vals[index*2] = strconv.Itoa(pull.Number)
-			vals[index*2+1] = pull.Title
+type pullRequestsQuery struct {
+	Data struct {
+		Repository struct {
+			PullRequests struct {
+				Nodes []pullrequest
+			}
 		}
-		return carapace.ActionValuesDescribed(vals...)
+	}
+}
+
+func ActionPullRequests(state string) carapace.Action {
+	return carapace.ActionCallback(func(args []string) carapace.Action {
+		var queryResult pullRequestsQuery
+		return GraphQlAction(fmt.Sprintf(`repository(owner: $owner, name: $repo){ pullRequests(first: 100, states: %v) { nodes { number, title } } }`, strings.ToUpper(state)), &queryResult, func() carapace.Action {
+			pullrequests := queryResult.Data.Repository.PullRequests.Nodes
+			vals := make([]string, len(pullrequests)*2)
+			for index, pullrequest := range pullrequests {
+				vals[index*2] = strconv.Itoa(pullrequest.Number)
+				vals[index*2+1] = pullrequest.Title // TODO shorten title
+			}
+			return carapace.ActionValuesDescribed(vals...)
+		})
 	})
 }
 
 type branch struct {
 	Name   string
-	Commit struct{ Sha string }
+	Target struct{ AbbreviatedOid string } // TODO last commit message?
+}
+
+type branchesQuery struct {
+	Data struct {
+		Repository struct {
+			Refs struct {
+				Nodes []branch
+			}
+		}
+	}
 }
 
 func ActionBranches() carapace.Action {
-	var branches []branch
-	return ApiAction("/repos/:owner/:repo/branches?protected=true&per_page=100", &branches, func() carapace.Action {
-		vals := make([]string, len(branches)*2)
-		for index, branch := range branches {
-			vals[index*2] = branch.Name
-			vals[index*2+1] = branch.Commit.Sha
-		}
-		return carapace.ActionValuesDescribed(vals...)
+	return carapace.ActionCallback(func(args []string) carapace.Action {
+		var queryResult branchesQuery
+		return GraphQlAction(`repository(owner: $owner, name: $repo){ refs(first: 100, refPrefix: "refs/heads/") { nodes { name, target { abbreviatedOid } } } }`, &queryResult, func() carapace.Action {
+			branches := queryResult.Data.Repository.Refs.Nodes
+			vals := make([]string, len(branches)*2)
+			for index, branch := range branches {
+				vals[index*2] = branch.Name
+				vals[index*2+1] = branch.Target.AbbreviatedOid
+			}
+			return carapace.ActionValuesDescribed(vals...)
+		})
 	})
 }
 
@@ -434,10 +560,23 @@ func ActionHttpMethods() carapace.Action {
 	)
 }
 
-func ApiAction(endpoint string, v interface{}, transform func() carapace.Action) carapace.Action {
+func GraphQlAction(query string, v interface{}, transform func() carapace.Action) carapace.Action {
 	return carapace.ActionCallback(func(args []string) carapace.Action {
-		if output, err := exec.Command("gh", "api", repoOverride(endpoint)).Output(); err != nil {
-			return carapace.ActionMessage(err.Error())
+		params := make([]string, 0)
+		if strings.Contains(query, "$owner") {
+			params = append(params, "$owner: String!")
+		}
+		if strings.Contains(query, "$repo") {
+			params = append(params, "$repo: String!")
+		}
+		queryParams := strings.Join(params, ",")
+		if queryParams != "" {
+			queryParams = "(" + queryParams + ")"
+		}
+
+		owner, repo := repoOverride()
+		if output, err := exec.Command("gh", "api", "graphql", "-F", "owner="+owner, "-F", "repo="+repo, "-f", fmt.Sprintf("query=query%v {%v}", queryParams, query)).Output(); err != nil {
+			return carapace.ActionMessage(string(output))
 		} else {
 			if json.Unmarshal(output, &v); err != nil {
 				return carapace.ActionMessage(err.Error())
@@ -447,26 +586,27 @@ func ApiAction(endpoint string, v interface{}, transform func() carapace.Action)
 	})
 }
 
-func repoOverride(endpoint string) string {
-	result := endpoint
+func repoOverride() (string, string) {
 	// TODO support env GH_REPO
+	owner := ":owner"
+	repo := ":repo"
 	for _, cmd := range rootCmd.Commands() {
 		if flag := cmd.Flag("repo"); flag != nil && flag.Changed {
 			parts := strings.Split(flag.Value.String(), "/")
 			switch len(parts) {
 			case 1:
-				result = strings.Replace(result, ":owner", parts[0], -1)
+				owner = parts[0]
 			case 2:
-				result = strings.Replace(result, ":owner", parts[0], -1)
-				result = strings.Replace(result, ":repo", parts[1], -1)
+				owner = parts[0]
+				repo = parts[1]
 			case 3:
-				result = strings.Replace(result, ":owner", parts[1], -1)
-				result = strings.Replace(result, ":repo", parts[2], -1)
+				owner = parts[1]
+				repo = parts[2]
 			}
 			break
 		}
 	}
-	return result
+	return owner, repo
 }
 
 // TODO escape `:` in zsh
