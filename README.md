@@ -22,6 +22,9 @@ gh completion | source
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 gh completion | Out-String | Invoke-Expression
 
+# xonsh
+exec($(gh completion))
+
 # zsh
 source <(gh completion)
 ```

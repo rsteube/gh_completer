@@ -281,10 +281,10 @@ func initRepo(f *cmdutil.Factory, c *cobra.Command) {
 func ActionConfigHosts() carapace.Action {
 	return carapace.ActionCallback(func(args []string) carapace.Action {
 		if config, err := config.ParseDefaultConfig(); err != nil {
-			return carapace.ActionMessage(err.Error())
+			return carapace.ActionMessage("failed to parse DefaultConfig: " + err.Error())
 		} else {
 			if hosts, err := config.Hosts(); err != nil {
-				return carapace.ActionMessage(err.Error())
+				return carapace.ActionMessage("failed ot loadd hosts: " + err.Error())
 			} else {
 				return carapace.ActionValues(hosts...)
 			}
@@ -295,10 +295,10 @@ func ActionConfigHosts() carapace.Action {
 func ActionAliases(f *cmdutil.Factory) carapace.Action {
 	return carapace.ActionCallback(func(args []string) carapace.Action {
 		if config, err := config.ParseDefaultConfig(); err != nil {
-			return carapace.ActionMessage(err.Error())
+			return carapace.ActionMessage("failed to parse DefaultConfig:" + err.Error())
 		} else {
 			if aliasCfg, err := config.Aliases(); err != nil {
-				return carapace.ActionMessage(err.Error())
+				return carapace.ActionMessage("failed to load AliasCfg:" + err.Error())
 			} else {
 				values := make([]string, 0)
 				for key, value := range aliasCfg.All() {
@@ -576,10 +576,10 @@ func GraphQlAction(query string, v interface{}, transform func() carapace.Action
 
 		owner, repo := repoOverride()
 		if output, err := exec.Command("gh", "api", "graphql", "-F", "owner="+owner, "-F", "repo="+repo, "-f", fmt.Sprintf("query=query%v {%v}", queryParams, query)).Output(); err != nil {
-			return carapace.ActionMessage(string(output))
+			return carapace.ActionMessage("failed to execute query:" + string(output))
 		} else {
 			if json.Unmarshal(output, &v); err != nil {
-				return carapace.ActionMessage(err.Error())
+				return carapace.ActionMessage("failed to unmarshall response: " + err.Error())
 			}
 			return transform()
 		}

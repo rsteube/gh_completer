@@ -16,7 +16,7 @@ require (
 	github.com/mattn/go-isatty v0.0.12
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b
 	github.com/mitchellh/go-homedir v1.1.0
-	github.com/rsteube/carapace v0.0.18
+	github.com/rsteube/carapace v0.0.22
 	github.com/shurcooL/githubv4 v0.0.0-20200627185320-e003124d66e4
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f
 	github.com/spf13/cobra v1.0.0
@@ -24,6 +24,7 @@ require (
 	github.com/stretchr/testify v1.5.1
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/text v0.3.3
+	google.golang.org/appengine v1.1.0
 	gopkg.in/yaml.v2 v2.2.8 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200506231410-2ff61e1afc86
 )
