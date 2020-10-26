@@ -31,7 +31,7 @@ func NewCmdCompletion(io *iostreams.IOStreams) *cobra.Command {
 			Homebrew, see https://docs.brew.sh/Shell-Completion
 		`),
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println(carapace.Gen(cmd).Snippet(shellType))
+			fmt.Println(carapace.Gen(cmd).Snippet(shellType, true))
 		},
 	}
 

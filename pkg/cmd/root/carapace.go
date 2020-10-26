@@ -10,6 +10,7 @@ import (
 	"github.com/cli/cli/internal/config"
 	"github.com/cli/cli/pkg/cmdutil"
 	"github.com/rsteube/carapace"
+	"github.com/rsteube/carapace-bin/pkg/actions/net"
 	"github.com/spf13/cobra"
 )
 
@@ -45,7 +46,7 @@ func initApi(f *cmdutil.Factory, c *cobra.Command) {}
 func initAuth(f *cmdutil.Factory, c *cobra.Command) {
 	if cmd, _, err := rootCmd.Find([]string{"auth", "login"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"hostname": carapace.ActionHosts(),
+			"hostname": net.ActionHosts(),
 		})
 	}
 
@@ -81,7 +82,7 @@ func initCompletion(f *cmdutil.Factory, c *cobra.Command) {
 func initConfig(f *cmdutil.Factory, c *cobra.Command) {
 	if cmd, _, err := rootCmd.Find([]string{"config", "get"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"host": carapace.ActionHosts(),
+			"host": net.ActionHosts(),
 		})
 
 		carapace.Gen(cmd).PositionalCompletion(
@@ -95,7 +96,7 @@ func initConfig(f *cmdutil.Factory, c *cobra.Command) {
 
 	if cmd, _, err := rootCmd.Find([]string{"config", "set"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"host": carapace.ActionHosts(),
+			"host": net.ActionHosts(),
 		})
 
 		carapace.Gen(cmd).PositionalCompletion(
@@ -142,7 +143,7 @@ func initIssue(f *cmdutil.Factory, c *cobra.Command) {
 	if cmd, _, err := rootCmd.Find([]string{"issue", "create"}); err == nil {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
 			"assignee":  ActionAssignableUsers(),
-			"label":     ActionLabels(), // TODO ActionMultiParts
+			"label":     ActionMultiLabels(), // TODO ActionMultiParts
 			"milestone": ActionMilestones(),
 		})
 	}
@@ -151,7 +152,7 @@ func initIssue(f *cmdutil.Factory, c *cobra.Command) {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
 			"assignee":  ActionAssignableUsers(),
 			"author":    ActionMentionableUsers(),
-			"label":     ActionLabels(), // TODO ActionMultiParts
+			"label":     ActionMultiLabels(), // TODO ActionMultiParts
 			"mention":   ActionAssignableUsers(),
 			"milestone": ActionMilestones(),
 			"state":     carapace.ActionValues("open", "closed", "all"),
@@ -194,7 +195,7 @@ func initPr(f *cmdutil.Factory, c *cobra.Command) {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
 			"assignee":  ActionAssignableUsers(),
 			"base":      ActionBranches(),
-			"label":     ActionLabels(),
+			"label":     ActionMultiLabels(),
 			"milestone": ActionMilestones(),
 			// TODO "project": ActionProjects(),
 			"reviewer": ActionAssignableUsers(),
@@ -214,7 +215,7 @@ func initPr(f *cmdutil.Factory, c *cobra.Command) {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
 			"assignee": ActionAssignableUsers(),
 			"base":     ActionBranches(),
-			"label":    ActionLabels(),
+			"label":    ActionMultiLabels(),
 			"state":    carapace.ActionValues("open", "closed", "merged", "all"),
 		})
 	}
@@ -337,6 +338,13 @@ func ActionLabels() carapace.Action {
 			}
 			return carapace.ActionValuesDescribed(vals...)
 		})
+	})
+}
+
+func ActionMultiLabels() carapace.Action {
+	return carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
+        //return ActionLabels().Suffix(",", args)
+		return ActionLabels()
 	})
 }
 

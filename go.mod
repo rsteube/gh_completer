@@ -16,7 +16,8 @@ require (
 	github.com/mattn/go-isatty v0.0.12
 	github.com/mgutz/ansi v0.0.0-20170206155736-9520e82c474b
 	github.com/mitchellh/go-homedir v1.1.0
-	github.com/rsteube/carapace v0.0.23
+	github.com/rsteube/carapace v0.1.3
+	github.com/rsteube/carapace-bin v0.1.5
 	github.com/shurcooL/githubv4 v0.0.0-20200627185320-e003124d66e4
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f
 	github.com/spf13/cobra v1.0.0
@@ -26,7 +27,7 @@ require (
 	golang.org/x/text v0.3.3
 	google.golang.org/appengine v1.1.0
 	gopkg.in/yaml.v2 v2.2.8 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200506231410-2ff61e1afc86
+	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 )
 
 replace github.com/shurcooL/graphql => github.com/cli/shurcooL-graphql v0.0.0-20200707151639-0f7232a2bf7e
