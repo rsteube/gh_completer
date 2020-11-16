@@ -13,10 +13,12 @@ import (
 	"github.com/cli/cli/internal/ghrepo"
 	"github.com/cli/cli/pkg/cmd/pr/shared"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/pkg/markdown"
 	"github.com/cli/cli/pkg/prompt"
 	"github.com/cli/cli/pkg/surveyext"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
@@ -125,6 +127,12 @@ func NewCmdReview(f *cmdutil.Factory, runF func(*ReviewOptions) error) *cobra.Co
 	cmd.Flags().BoolVarP(&flagRequestChanges, "request-changes", "r", false, "Request changes on a pull request")
 	cmd.Flags().BoolVarP(&flagComment, "comment", "c", false, "Comment on a pull request")
 	cmd.Flags().StringVarP(&opts.Body, "body", "b", "", "Specify the body of a review")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).PositionalCompletion(
+			action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
+		)
+	})
 
 	return cmd
 }

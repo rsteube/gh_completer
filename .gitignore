@@ -6,6 +6,7 @@
 /site
 .github/**/node_modules
 /CHANGELOG.md
+.env
 
 # VS Code
 .vscode
