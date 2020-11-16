@@ -22,6 +22,8 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/muesli/termenv v0.7.4
 	github.com/rivo/uniseg v0.1.0
+        github.com/rsteube/carapace v0.1.7
+	github.com/rsteube/carapace-bin v0.1.6
 	github.com/shurcooL/githubv4 v0.0.0-20200928013246-d292edc3691b
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f
 	github.com/spf13/cobra v1.1.1

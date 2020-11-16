@@ -3,11 +3,12 @@ package create
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/cli/cli/test"
 	"io/ioutil"
 	"net/http"
 	"strings"
 	"testing"
+
+	"github.com/cli/cli/test"
 
 	"github.com/cli/cli/pkg/cmd/gist/shared"
 	"github.com/cli/cli/pkg/cmdutil"

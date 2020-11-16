@@ -19,8 +19,10 @@ import (
 	"github.com/cli/cli/internal/ghinstance"
 	"github.com/cli/cli/internal/ghrepo"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/pkg/jsoncolor"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
@@ -160,6 +162,15 @@ original query accepts an '$endCursor: String' variable and that it fetches the
 	cmd.Flags().BoolVar(&opts.Paginate, "paginate", false, "Make additional HTTP requests to fetch all pages of results")
 	cmd.Flags().StringVar(&opts.RequestInputFile, "input", "", "The file to use as body for the HTTP request")
 	cmd.Flags().BoolVar(&opts.Silent, "silent", false, "Do not print the response body")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"hostname": action.ActionConfigHosts(),
+			"method":   action.ActionHttpMethods(),
+			"input":    carapace.ActionFiles(""),
+		})
+	})
+
 	return cmd
 }
 

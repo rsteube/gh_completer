@@ -95,6 +95,9 @@ func NewCmdRoot(f *cmdutil.Factory, version, buildDate string) *cobra.Command {
 
 	cmdutil.DisableAuthCheck(cmd)
 
+	cmdutil.InitCompletions()
+	cmdutil.AddAliasCompletion(cmd)
+
 	return cmd
 }
 
