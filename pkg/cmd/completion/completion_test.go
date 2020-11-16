@@ -19,12 +19,12 @@ func TestNewCmdCompletion(t *testing.T) {
 		{
 			name:    "no arguments",
 			args:    "completion",
-			wantOut: "complete -o default -F __start_gh gh",
+			wantErr: "expected 'bash', 'elvish', 'fish', 'oil', 'powershell', 'xonsh' or 'zsh' [was: ]",
 		},
 		{
 			name:    "zsh completion",
 			args:    "completion -s zsh",
-			wantOut: "#compdef _gh gh",
+			wantOut: `#compdef gh`,
 		},
 		{
 			name:    "fish completion",
@@ -39,7 +39,7 @@ func TestNewCmdCompletion(t *testing.T) {
 		{
 			name:    "unsupported shell",
 			args:    "completion -s csh",
-			wantErr: "unsupported shell type \"csh\"",
+			wantErr: "expected 'bash', 'elvish', 'fish', 'oil', 'powershell', 'xonsh' or 'zsh' [was: csh]",
 		},
 	}
 	for _, tt := range tests {

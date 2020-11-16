@@ -7,6 +7,8 @@ import (
 	"github.com/cli/cli/internal/config"
 	"github.com/cli/cli/pkg/cmdutil"
 	"github.com/cli/cli/pkg/iostreams"
+	"github.com/rsteube/carapace"
+	"github.com/rsteube/carapace-bin/pkg/actions/net"
 	"github.com/spf13/cobra"
 )
 
@@ -48,6 +50,20 @@ func NewCmdConfigGet(f *cmdutil.Factory, runF func(*GetOptions) error) *cobra.Co
 	}
 
 	cmd.Flags().StringVarP(&opts.Hostname, "host", "h", "", "Get per-host setting")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"host": net.ActionHosts(),
+		})
+
+		carapace.Gen(cmd).PositionalCompletion(
+			carapace.ActionValuesDescribed(
+				"git_protocol", "What protocol to use when performing git operations.",
+				"editor", "What editor gh should run when creating issues, pull requests, etc.",
+				"aliases", "Aliases allow you to create nicknames for gh commands",
+			),
+		)
+	})
 
 	return cmd
 }
