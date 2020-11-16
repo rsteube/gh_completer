@@ -2,14 +2,15 @@ package delete
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
+
 	"github.com/cli/cli/api"
 	"github.com/cli/cli/internal/ghinstance"
 	"github.com/cli/cli/pkg/cmd/gist/shared"
 	"github.com/cli/cli/pkg/cmdutil"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/spf13/cobra"
-	"net/http"
-	"strings"
 )
 
 type DeleteOptions struct {
