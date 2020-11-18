@@ -139,12 +139,19 @@ func NewCmdCreate(f *cmdutil.Factory, runF func(*CreateOptions) error) *cobra.Co
 
 	cmdutil.DeferCompletion(func() {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"assignee":  action.ActionAssignableUsers(cmd),
-			"base":      action.ActionBranches(cmd),
-			"label":     action.ActionMultiLabels(cmd),
+			"assignee": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
+				return action.ActionAssignableUsers(cmd).Invoke(args).Filter(parts).ToA()
+			}),
+			"base": action.ActionBranches(cmd),
+			"head": action.ActionBranches(cmd),
+			"label": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
+				return action.ActionLabels(cmd).Invoke(args).Filter(parts).ToA()
+			}),
 			"milestone": action.ActionMilestones(cmd),
 			// TODO "project": ActionProjects(),
-			"reviewer": action.ActionAssignableUsers(cmd),
+			"reviewer": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
+				return action.ActionAssignableUsers(cmd).Invoke(args).Filter(parts).ToA()
+			}),
 		})
 	})
 

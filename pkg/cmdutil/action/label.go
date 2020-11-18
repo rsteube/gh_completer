@@ -35,8 +35,3 @@ func ActionLabels(cmd *cobra.Command) carapace.Action {
 	})
 }
 
-func ActionMultiLabels(cmd *cobra.Command) carapace.Action {
-	return carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
-		return ActionLabels(cmd).Invoke(args).Filter(parts).ToA()
-	})
-}
