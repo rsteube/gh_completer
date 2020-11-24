@@ -40,11 +40,10 @@ func ActionReleases(cmd *cobra.Command) carapace.Action {
 		var queryResult releaseQuery
 		return GraphQlAction(cmd, `repository(owner: $owner, name: $repo) { releases(first: 100) { edges { node { createdAt isPrerelease name tag { name } } } } }`, &queryResult, func() carapace.Action {
 			releases := queryResult.Data.Repository.Releases.Edges
-			vals := make([]string, len(releases)*2)
-			for index, release := range releases {
+			vals := make([]string, 0, len(releases)*2)
+			for _, release := range releases {
 				if release.Node.Tag.Name != "" {
-					vals[index*2] = release.Node.Tag.Name
-					vals[index*2+1] = utils.FuzzyAgo(time.Since(release.Node.CreatedAt))
+					vals = append(vals, release.Node.Tag.Name, utils.FuzzyAgo(time.Since(release.Node.CreatedAt)))
 				}
 			}
 			return carapace.ActionValuesDescribed(vals...)
