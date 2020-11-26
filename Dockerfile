@@ -2,12 +2,13 @@ FROM golang
 
 # shells
 RUN wget https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb \
- && dpkg -i packages-microsoft-prod.deb \
- && apt-get update
+ && dpkg -i packages-microsoft-prod.deb
 
-RUN apt-get install -y bash-completion \ 
+RUN apt-get update \
+ && apt-get install -y bash-completion \ 
                        fish \
                        elvish \
+                       locales \
                        powershell \
                        python3-pip \
                        zsh
@@ -22,6 +23,13 @@ source <(gh completion)" \
        > /root/.bashrc
 
 # fish
+# Set the locale
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen \
+ && locale-gen
+ENV LANG en_US.UTF-8  
+ENV LANGUAGE en_US:en  
+ENV LC_ALL en_US.UTF-8     
+
 RUN mkdir -p /root/.config/fish \
  && echo "gh completion | source" \
        > /root/.config/fish/config.fish
