@@ -2,30 +2,28 @@
 
 [gh](https://github.com/cli/cli) with dynamic completion
 
-
 [![asciicast](https://asciinema.org/a/358690.svg)](https://asciinema.org/a/358690)
 
 ## Usage
 
 ```sh
 #bash
-source <(gh completion)
+source <(gh _carapace)
 
 # elvish
-gh completion > gh.elv
--source gh.elv
+eval (gh _carapace|slurp)
 
 # fish
-gh completion | source
+gh _carapace | source
 
 # powershell
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
-gh completion | Out-String | Invoke-Expression
+gh _carapace | Out-String | Invoke-Expression
 
 # xonsh
 COMPLETIONS_CONFIRM=True
-exec($(gh completion))
+exec($(gh _carapace))
 
 # zsh
-source <(gh completion)
+source <(gh _carapace)
 ```
