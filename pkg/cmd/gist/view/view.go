@@ -9,9 +9,11 @@ import (
 	"github.com/cli/cli/internal/ghinstance"
 	"github.com/cli/cli/pkg/cmd/gist/shared"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/pkg/markdown"
 	"github.com/cli/cli/utils"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
@@ -52,6 +54,22 @@ func NewCmdView(f *cmdutil.Factory, runF func(*ViewOptions) error) *cobra.Comman
 	cmd.Flags().BoolVarP(&opts.Raw, "raw", "r", false, "do not try and render markdown")
 	cmd.Flags().BoolVarP(&opts.Web, "web", "w", false, "open gist in browser")
 	cmd.Flags().StringVarP(&opts.Filename, "filename", "f", "", "display a single file of the gist")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"filename": carapace.ActionCallback(func(args []string) carapace.Action {
+				if len(args) > 0 {
+					return action.ActionGistFiles(cmd, args[0])
+				} else {
+					return carapace.ActionValues()
+				}
+			}),
+		})
+
+		carapace.Gen(cmd).PositionalCompletion(
+			action.ActionGists(cmd),
+		)
+	})
 
 	return cmd
 }

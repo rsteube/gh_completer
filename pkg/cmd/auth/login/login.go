@@ -14,8 +14,10 @@ import (
 	"github.com/cli/cli/internal/ghinstance"
 	"github.com/cli/cli/pkg/cmd/auth/shared"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/pkg/prompt"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
@@ -110,6 +112,15 @@ func NewCmdLogin(f *cmdutil.Factory, runF func(*LoginOptions) error) *cobra.Comm
 	cmd.Flags().StringSliceVarP(&opts.Scopes, "scopes", "s", nil, "Additional authentication scopes for gh to have")
 	cmd.Flags().BoolVar(&tokenStdin, "with-token", false, "Read token from standard input")
 	cmd.Flags().BoolVarP(&opts.Web, "web", "w", false, "Open a browser to authenticate")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"hostname": action.ActionConfigHosts(),
+			"scopes": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
+				return action.ActionAuthScopes().Invoke(args).Filter(parts).ToA()
+			}),
+		})
+	})
 
 	return cmd
 }

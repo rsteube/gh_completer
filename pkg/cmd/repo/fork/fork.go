@@ -13,9 +13,11 @@ import (
 	"github.com/cli/cli/internal/config"
 	"github.com/cli/cli/internal/ghrepo"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/pkg/prompt"
 	"github.com/cli/cli/utils"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
@@ -78,6 +80,12 @@ With no argument, creates a fork of the current repository. Otherwise, forks the
 	cmd.Flags().BoolVar(&opts.Clone, "clone", false, "Clone the fork {true|false}")
 	cmd.Flags().BoolVar(&opts.Remote, "remote", false, "Add remote for fork {true|false}")
 	cmd.Flags().StringVar(&opts.RemoteName, "remote-name", "origin", "Specify a name for a fork's new remote.")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).PositionalCompletion(
+			action.ActionOwnerRepositories(cmd),
+		)
+	})
 
 	return cmd
 }

@@ -12,8 +12,10 @@ import (
 	"github.com/cli/cli/internal/ghrepo"
 	"github.com/cli/cli/pkg/cmd/secret/shared"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/utils"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
@@ -49,6 +51,12 @@ func NewCmdList(f *cmdutil.Factory, runF func(*ListOptions) error) *cobra.Comman
 	}
 
 	cmd.Flags().StringVarP(&opts.OrgName, "org", "o", "", "List secrets for an organization")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"org": action.ActionUsers(cmd, &action.UserOpts{Organizations: true}),
+		})
+	})
 
 	return cmd
 }
