@@ -2,6 +2,8 @@
 
 [gh](https://github.com/cli/cli) with dynamic completion
 
+> continued work in the [better-completions](https://github.com/rsteube/gh/tree/better-completions) branch
+
 [![asciicast](https://asciinema.org/a/358690.svg)](https://asciinema.org/a/358690)
 
 ## Usage
