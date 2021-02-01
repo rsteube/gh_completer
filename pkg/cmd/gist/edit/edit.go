@@ -17,9 +17,11 @@ import (
 	"github.com/cli/cli/internal/ghinstance"
 	"github.com/cli/cli/pkg/cmd/gist/shared"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/pkg/prompt"
 	"github.com/cli/cli/pkg/surveyext"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
@@ -66,6 +68,22 @@ func NewCmdEdit(f *cmdutil.Factory, runF func(*EditOptions) error) *cobra.Comman
 
 	cmd.Flags().StringVarP(&opts.AddFilename, "add", "a", "", "Add a new file to the gist")
 	cmd.Flags().StringVarP(&opts.EditFilename, "filename", "f", "", "Select a file to edit")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"filename": carapace.ActionCallback(func(args []string) carapace.Action {
+				if len(args) > 0 {
+					return action.ActionGistFiles(cmd, args[0])
+				} else {
+					return carapace.ActionValues()
+				}
+			}),
+		})
+
+		carapace.Gen(cmd).PositionalCompletion(
+			action.ActionGists(cmd),
+		)
+	})
 
 	return cmd
 }
