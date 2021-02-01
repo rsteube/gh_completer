@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  build: &base
+    build: .
+    command: sh -c 'sh -c "cd /gh/cmd/gh/ && go build -ldflags=\"-s -w\" ."'
+    volumes:
+      - '.:/gh/'
+      - 'go:/go/'
+    environment:
+      GITHUB_TOKEN: $GITHUB_TOKEN
+
+  bash:
+    <<: *base
+    command: bash
+
+  elvish:
+    <<: *base
+    command: elvish
+
+  fish:
+    <<: *base
+    command: fish
+
+  powershell:
+    <<: *base
+    command: pwsh
+  
+  xonsh: 
+    <<: *base
+    command: xonsh
+
+  zsh:
+    <<: *base
+    command: zsh
+
+volumes:
+  go:
