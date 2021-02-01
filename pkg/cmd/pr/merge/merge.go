@@ -16,6 +16,7 @@ import (
 	"github.com/cli/cli/pkg/cmdutil"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/pkg/prompt"
+	"github.com/rsteube/carapace"
 	"github.com/cli/cli/pkg/surveyext"
 	"github.com/spf13/cobra"
 )
@@ -151,6 +152,13 @@ func NewCmdMerge(f *cmdutil.Factory, runF func(*MergeOptions) error) *cobra.Comm
 	cmd.Flags().BoolVarP(&flagSquash, "squash", "s", false, "Squash the commits into one commit and merge it into the base branch")
 	cmd.Flags().BoolVar(&opts.AutoMergeEnable, "auto", false, "Automatically merge only after necessary requirements are met")
 	cmd.Flags().BoolVar(&opts.AutoMergeDisable, "disable-auto", false, "Disable auto-merge for this pull request")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).PositionalCompletion(
+			action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
+		)
+	})
+
 	return cmd
 }
 
