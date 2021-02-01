@@ -12,8 +12,10 @@ import (
 	"github.com/cli/cli/pkg/cmd/pr/shared"
 	prShared "github.com/cli/cli/pkg/cmd/pr/shared"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/utils"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
@@ -75,6 +77,19 @@ func NewCmdList(f *cmdutil.Factory, runF func(*ListOptions) error) *cobra.Comman
 	cmd.Flags().StringVarP(&opts.Author, "author", "A", "", "Filter by author")
 	cmd.Flags().StringVar(&opts.Mention, "mention", "", "Filter by mention")
 	cmd.Flags().StringVarP(&opts.Milestone, "milestone", "m", "", "Filter by milestone `number` or `title`")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"assignee": action.ActionAssignableUsers(cmd),
+			"author":   action.ActionMentionableUsers(cmd),
+			"label": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
+				return action.ActionLabels(cmd).Invoke(args).Filter(parts).ToA()
+			}),
+			"mention":   action.ActionAssignableUsers(cmd),
+			"milestone": action.ActionMilestones(cmd),
+			"state":     carapace.ActionValues("open", "closed", "all"),
+		})
+	})
 
 	return cmd
 }
