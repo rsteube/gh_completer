@@ -11,9 +11,11 @@ import (
 	"github.com/cli/cli/internal/ghrepo"
 	"github.com/cli/cli/pkg/cmd/release/shared"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/pkg/markdown"
 	"github.com/cli/cli/utils"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
@@ -58,6 +60,12 @@ func NewCmdView(f *cmdutil.Factory, runF func(*ViewOptions) error) *cobra.Comman
 	}
 
 	cmd.Flags().BoolVarP(&opts.WebMode, "web", "w", false, "Open the release in the browser")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).PositionalCompletion(
+			action.ActionReleases(cmd),
+		)
+	})
 
 	return cmd
 }

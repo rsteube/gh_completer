@@ -14,9 +14,11 @@ import (
 	issueShared "github.com/cli/cli/pkg/cmd/issue/shared"
 	prShared "github.com/cli/cli/pkg/cmd/pr/shared"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
 	"github.com/cli/cli/pkg/markdown"
 	"github.com/cli/cli/utils"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
@@ -65,6 +67,12 @@ func NewCmdView(f *cmdutil.Factory, runF func(*ViewOptions) error) *cobra.Comman
 
 	cmd.Flags().BoolVarP(&opts.WebMode, "web", "w", false, "Open an issue in the browser")
 	cmd.Flags().BoolVarP(&opts.Comments, "comments", "c", false, "View issue comments")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).PositionalCompletion(
+			action.ActionIssues(cmd, action.IssueOpts{Open: true}),
+		)
+	})
 
 	return cmd
 }
