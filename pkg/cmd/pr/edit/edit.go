@@ -12,7 +12,9 @@ import (
 	"github.com/cli/cli/internal/ghrepo"
 	shared "github.com/cli/cli/pkg/cmd/pr/shared"
 	"github.com/cli/cli/pkg/cmdutil"
+	"github.com/cli/cli/pkg/cmdutil/action"
 	"github.com/cli/cli/pkg/iostreams"
+	"github.com/rsteube/carapace"
 	"github.com/shurcooL/githubv4"
 	"github.com/spf13/cobra"
 )
@@ -119,6 +121,27 @@ func NewCmdEdit(f *cmdutil.Factory, runF func(*EditOptions) error) *cobra.Comman
 	cmd.Flags().StringSliceVar(&opts.Editable.Projects.Add, "add-project", nil, "Add the pull request to projects by `name`")
 	cmd.Flags().StringSliceVar(&opts.Editable.Projects.Remove, "remove-project", nil, "Remove the pull request from projects by `name`")
 	cmd.Flags().StringVarP(&opts.Editable.Milestone.Value, "milestone", "m", "", "Edit the milestone the pull request belongs to by `name`")
+
+	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"add-assignee": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
+				return action.ActionAssignableUsers(cmd).Invoke(args).Filter(parts).ToA()
+			}),
+			"add-label": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
+				return action.ActionLabels(cmd).Invoke(args).Filter(parts).ToA()
+			}),
+			"add-project": action.ActionProjects(cmd, action.ProjectOpts{Open: true}),
+			"add-reviewer": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
+				return action.ActionAssignableUsers(cmd).Invoke(args).Filter(parts).ToA()
+			}),
+			"milestone": action.ActionMilestones(cmd),
+			// TODO remove-reviewer, remove-assignee, remove-label, remove-project
+		})
+
+		carapace.Gen(cmd).PositionalCompletion(
+			action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
+		)
+	})
 
 	return cmd
 }
