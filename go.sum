@@ -343,6 +343,8 @@ github.com/rogpeppe/go-internal v1.3.0 h1:RR9dF3JtopPvtkroDZuVD7qquD0bnHlKSqaQhg
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=
 github.com/rsteube/carapace v0.3.8 h1:Tir8haipGCvfyWlLTPv/zGWJFA1NkUmQj+pXFOIUHfE=
 github.com/rsteube/carapace v0.3.8/go.mod h1:KFUcTCOChx8NdnMn7+l/3/ty+BLt+I3ciWnBwoT/OQk=
+github.com/rsteube/carapace v0.3.10 h1:winP9JLkxrrzU9TSFy4Ezrco2RyHabegoSi06dOoJZQ=
+github.com/rsteube/carapace v0.3.10/go.mod h1:KFUcTCOChx8NdnMn7+l/3/ty+BLt+I3ciWnBwoT/OQk=
 github.com/russross/blackfriday/v2 v2.0.1 h1:lPqVAte+HuHNfhJ/0LC98ESWRz8afy9tM/0RK8m9o+Q=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f h1:UFr9zpz4xgTnIE5yIMtWAMngCdZ9p/+q6lTbgelo80M=
