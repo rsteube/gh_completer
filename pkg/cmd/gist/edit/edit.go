@@ -70,6 +70,7 @@ func NewCmdEdit(f *cmdutil.Factory, runF func(*EditOptions) error) *cobra.Comman
 
 	cmdutil.DeferCompletion(func() {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"add": carapace.ActionFiles(),
 			"filename": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 				if len(c.Args) > 0 {
 					return action.ActionGistFiles(cmd, c.Args[0])
