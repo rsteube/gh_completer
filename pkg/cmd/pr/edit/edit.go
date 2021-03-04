@@ -124,15 +124,15 @@ func NewCmdEdit(f *cmdutil.Factory, runF func(*EditOptions) error) *cobra.Comman
 
 	cmdutil.DeferCompletion(func() {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"add-assignee": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
-				return action.ActionAssignableUsers(cmd).Invoke(args).Filter(parts).ToA()
+			"add-assignee": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+				return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
 			}),
-			"add-label": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
-				return action.ActionLabels(cmd).Invoke(args).Filter(parts).ToA()
+			"add-label": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+				return action.ActionLabels(cmd).Invoke(c).Filter(c.Parts).ToA()
 			}),
 			"add-project": action.ActionProjects(cmd, action.ProjectOpts{Open: true}),
-			"add-reviewer": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
-				return action.ActionAssignableUsers(cmd).Invoke(args).Filter(parts).ToA()
+			"add-reviewer": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+				return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
 			}),
 			"milestone": action.ActionMilestones(cmd),
 			// TODO remove-reviewer, remove-assignee, remove-label, remove-project

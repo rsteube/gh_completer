@@ -82,8 +82,8 @@ func NewCmdList(f *cmdutil.Factory, runF func(*ListOptions) error) *cobra.Comman
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
 			"assignee": action.ActionAssignableUsers(cmd),
 			"author":   action.ActionMentionableUsers(cmd),
-			"label": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
-				return action.ActionLabels(cmd).Invoke(args).Filter(parts).ToA()
+			"label": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+				return action.ActionLabels(cmd).Invoke(c).Filter(c.Parts).ToA()
 			}),
 			"mention":   action.ActionAssignableUsers(cmd),
 			"milestone": action.ActionMilestones(cmd),

@@ -36,7 +36,7 @@ type releaseQuery struct {
 }
 
 func ActionReleases(cmd *cobra.Command) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult releaseQuery
 		return GraphQlAction(cmd, `repository(owner: $owner, name: $repo) { releases(first: 100, orderBy: {direction: DESC, field: CREATED_AT}) { edges { node { createdAt isPrerelease name tag { name } } } } }`, &queryResult, func() carapace.Action {
 			releases := queryResult.Data.Repository.Releases.Edges
@@ -52,7 +52,7 @@ func ActionReleases(cmd *cobra.Command) carapace.Action {
 }
 
 func ActionReleaseAssets(cmd *cobra.Command, tag string) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult releaseQuery
 		return GraphQlAction(cmd, `repository(owner: $owner, name: $repo) { releases(first: 100, orderBy: {direction: DESC, field: CREATED_AT}) { edges { node { createdAt isPrerelease name tag { name } releaseAssets(first: 100) { nodes { name size } } } } } }`, &queryResult, func() carapace.Action {
 			releases := queryResult.Data.Repository.Releases.Edges

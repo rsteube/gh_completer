@@ -69,8 +69,8 @@ func NewCmdConfigSet(f *cmdutil.Factory, runF func(*SetOptions) error) *cobra.Co
 				"prompt", "toggle interactive prompting in the terminal",
 				"pager", "the terminal pager program to send standard output to",
 			),
-			carapace.ActionCallback(func(args []string) carapace.Action {
-				switch args[0] {
+			carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+				switch c.Args[0] {
 				case "git_protocol":
 					return carapace.ActionValues("ssh", "https")
 				case "editor":

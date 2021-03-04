@@ -23,7 +23,7 @@ type labelsQuery struct {
 }
 
 func ActionLabels(cmd *cobra.Command) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult labelsQuery
 		return GraphQlAction(cmd, `repository(owner: $owner, name: $repo){ labels(first: 100) { nodes { name, description } } }`, &queryResult, func() carapace.Action {
 			labels := queryResult.Data.Repository.Labels.Nodes

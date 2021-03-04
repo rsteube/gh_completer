@@ -21,7 +21,7 @@ type branchesQuery struct {
 }
 
 func ActionBranches(cmd *cobra.Command) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult branchesQuery
 		return GraphQlAction(cmd, `repository(owner: $owner, name: $repo){ refs(first: 100, refPrefix: "refs/heads/") { nodes { name, target { abbreviatedOid } } } }`, &queryResult, func() carapace.Action {
 			branches := queryResult.Data.Repository.Refs.Nodes
