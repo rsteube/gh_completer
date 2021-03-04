@@ -24,7 +24,7 @@ func Aliases() (map[string]string, error) {
 }
 
 func ActionAliases() carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		if aliases, err := Aliases(); err != nil {
 			return carapace.ActionMessage(err.Error())
 		} else {

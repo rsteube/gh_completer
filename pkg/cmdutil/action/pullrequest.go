@@ -43,7 +43,7 @@ func (p *PullRequestOpts) states() string {
 }
 
 func ActionPullRequests(cmd *cobra.Command, opts PullRequestOpts) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult pullRequestsQuery
 		return GraphQlAction(cmd, fmt.Sprintf(`repository(owner: $owner, name: $repo){ pullRequests(first: 100, states: %v, orderBy: {direction: DESC, field: UPDATED_AT}) { nodes { number, title, mergeStateStatus } } }`, opts.states()), &queryResult, func() carapace.Action {
 			pullrequests := queryResult.Data.Repository.PullRequests.Nodes

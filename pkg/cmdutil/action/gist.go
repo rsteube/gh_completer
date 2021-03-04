@@ -27,7 +27,7 @@ type gistQuery struct {
 }
 
 func ActionGists(cmd *cobra.Command) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult gistQuery
 		return GraphQlAction(cmd, `viewer { gists(first:100, privacy:ALL) { edges { node { name, description } } } }`, &queryResult, func() carapace.Action {
 			gists := queryResult.Data.Viewer.Gists.Edges
@@ -42,7 +42,7 @@ func ActionGists(cmd *cobra.Command) carapace.Action {
 }
 
 func ActionGistFiles(cmd *cobra.Command, name string) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		// TODO query/filter specific gist by name
 		var queryResult gistQuery
 		return GraphQlAction(cmd, `viewer { gists(first:100, privacy:ALL) { edges { node { name, description, files { name, size } } } } }`, &queryResult, func() carapace.Action {

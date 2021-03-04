@@ -10,7 +10,7 @@ import (
 )
 
 func ActionSecrets(cmd *cobra.Command, org string) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		repo := ""
 		if cmd.Flag("repo") != nil {
 			repo = cmd.Flag("repo").Value.String()

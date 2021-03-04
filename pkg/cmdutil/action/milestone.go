@@ -21,7 +21,7 @@ type milestoneQuery struct {
 }
 
 func ActionMilestones(cmd *cobra.Command) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult milestoneQuery
 		return GraphQlAction(cmd, `repository(owner: $owner, name: $repo){ milestones(first: 100) { nodes { title, description } } }`, &queryResult, func() carapace.Action {
 			milestones := queryResult.Data.Repository.Milestones.Nodes

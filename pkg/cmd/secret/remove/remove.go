@@ -56,7 +56,7 @@ func NewCmdRemove(f *cmdutil.Factory, runF func(*RemoveOptions) error) *cobra.Co
 		})
 
 		carapace.Gen(cmd).PositionalCompletion(
-			carapace.ActionCallback(func(args []string) carapace.Action {
+			carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 				return action.ActionSecrets(cmd, cmd.Flag("org").Value.String())
 			}),
 		)

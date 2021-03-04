@@ -74,9 +74,9 @@ func NewCmdChecks(f *cmdutil.Factory, runF func(*ChecksOptions) error) *cobra.Co
 
 	cmdutil.DeferCompletion(func() {
 		carapace.Gen(cmd).PositionalCompletion(
-			carapace.ActionCallback(func(args []string) carapace.Action {
-				pullRequests := action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}).Invoke(args)
-				branches := action.ActionBranches(cmd).Invoke(args)
+			carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+				pullRequests := action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}).Invoke(c)
+				branches := action.ActionBranches(cmd).Invoke(c)
 				return pullRequests.Merge(branches).ToA()
 			}),
 		)
