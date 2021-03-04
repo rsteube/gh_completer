@@ -121,8 +121,8 @@ func NewCmdLogin(f *cmdutil.Factory, runF func(*LoginOptions) error) *cobra.Comm
 	cmdutil.DeferCompletion(func() {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
 			"hostname": action.ActionConfigHosts(),
-			"scopes": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
-				return action.ActionAuthScopes().Invoke(args).Filter(parts).ToA()
+			"scopes": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+				return action.ActionAuthScopes().Invoke(c).Filter(c.Parts).ToA()
 			}),
 		})
 	})

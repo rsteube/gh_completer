@@ -72,8 +72,8 @@ With '--branch', view a specific branch of the repository.`,
 
 	cmdutil.DeferCompletion(func() {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"branch": carapace.ActionCallback(func(args []string) carapace.Action {
-				if len(args) > 0 {
+			"branch": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+				if len(c.Args) > 0 {
 					return action.ActionBranches(cmd)
 				} else {
 					return carapace.ActionValues()

@@ -40,7 +40,7 @@ func (i *IssueOpts) states() string {
 }
 
 func ActionIssues(cmd *cobra.Command, opts IssueOpts) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult issueQuery
 		return GraphQlAction(cmd, fmt.Sprintf(`repository(owner: $owner, name: $repo){ issues(first: 100, states: %v, orderBy: {direction: DESC, field: UPDATED_AT}) { nodes { number, title } } }`, opts.states()), &queryResult, func() carapace.Action {
 			issues := queryResult.Data.Repository.Issues.Nodes
