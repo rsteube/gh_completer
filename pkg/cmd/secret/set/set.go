@@ -117,8 +117,8 @@ func NewCmdSet(f *cmdutil.Factory, runF func(*SetOptions) error) *cobra.Command 
 	cmdutil.DeferCompletion(func() {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
 			"org": action.ActionUsers(cmd, &action.UserOpts{Organizations: true}),
-			"repos": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
-				return action.ActionOwnerRepositories(cmd).Invoke(args).Filter(parts).ToA()
+			"repos": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+				return action.ActionOwnerRepositories(cmd).Invoke(c).Filter(c.Parts).ToA()
 			}),
 			"visibility": carapace.ActionValues("all", "private", "selected"),
 		})

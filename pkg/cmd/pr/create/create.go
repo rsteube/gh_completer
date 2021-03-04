@@ -178,18 +178,18 @@ func NewCmdCreate(f *cmdutil.Factory, runF func(*CreateOptions) error) *cobra.Co
 
 	cmdutil.DeferCompletion(func() {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"assignee": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
-				return action.ActionAssignableUsers(cmd).Invoke(args).Filter(parts).ToA()
+			"assignee": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+				return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
 			}),
 			"base": action.ActionBranches(cmd),
 			"head": action.ActionBranches(cmd),
-			"label": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
-				return action.ActionLabels(cmd).Invoke(args).Filter(parts).ToA()
+			"label": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+				return action.ActionLabels(cmd).Invoke(c).Filter(c.Parts).ToA()
 			}),
 			"milestone": action.ActionMilestones(cmd),
 			"project":   action.ActionProjects(cmd, action.ProjectOpts{Open: true}),
-			"reviewer": carapace.ActionMultiParts(",", func(args, parts []string) carapace.Action {
-				return action.ActionAssignableUsers(cmd).Invoke(args).Filter(parts).ToA()
+			"reviewer": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+				return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
 			}),
 		})
 	})

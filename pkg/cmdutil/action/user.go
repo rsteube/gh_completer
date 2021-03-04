@@ -19,9 +19,9 @@ type mentionableUsersQuery struct {
 }
 
 func ActionMentionableUsers(cmd *cobra.Command) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult mentionableUsersQuery
-		return GraphQlAction(cmd, fmt.Sprintf(`repository(owner: $owner, name: $repo){ mentionableUsers(first: 100, query: "%v") { nodes { login, name } } }`, carapace.CallbackValue), &queryResult, func() carapace.Action {
+		return GraphQlAction(cmd, fmt.Sprintf(`repository(owner: $owner, name: $repo){ mentionableUsers(first: 100, query: "%v") { nodes { login, name } } }`, c.CallbackValue), &queryResult, func() carapace.Action {
 			users := queryResult.Data.Repository.MentionableUsers.Nodes
 			vals := make([]string, len(users)*2)
 			for index, user := range users {
@@ -49,9 +49,9 @@ type assignableUserQuery struct {
 }
 
 func ActionAssignableUsers(cmd *cobra.Command) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult assignableUserQuery
-		return GraphQlAction(cmd, fmt.Sprintf(`repository(owner: $owner, name: $repo){ assignableUsers(first: 100, query: "%v") { nodes { login, name } } }`, carapace.CallbackValue), &queryResult, func() carapace.Action {
+		return GraphQlAction(cmd, fmt.Sprintf(`repository(owner: $owner, name: $repo){ assignableUsers(first: 100, query: "%v") { nodes { login, name } } }`, c.CallbackValue), &queryResult, func() carapace.Action {
 			users := queryResult.Data.Repository.AssignableUsers.Nodes
 			vals := make([]string, len(users)*2)
 			for index, user := range users {
@@ -90,9 +90,9 @@ func (u UserOpts) format() string {
 }
 
 func ActionUsers(cmd *cobra.Command, opts *UserOpts) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		var queryResult userQuery
-		return GraphQlAction(cmd, fmt.Sprintf(`search(query: "%v in:login", type: USER, first: 100) { edges { node { %v } } }`, carapace.CallbackValue, opts.format()), &queryResult, func() carapace.Action {
+		return GraphQlAction(cmd, fmt.Sprintf(`search(query: "%v in:login", type: USER, first: 100) { edges { node { %v } } }`, c.CallbackValue, opts.format()), &queryResult, func() carapace.Action {
 			users := queryResult.Data.Search.Edges
 			vals := make([]string, len(users)*2)
 			for index, user := range users {
