@@ -16,7 +16,7 @@ import (
 )
 
 func ActionConfigHosts() carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		if config, err := config.ParseDefaultConfig(); err != nil {
 			return carapace.ActionMessage("failed to parse DefaultConfig: " + err.Error())
 		} else {
@@ -39,7 +39,7 @@ func ActionHttpMethods() carapace.Action {
 }
 
 func GraphQlAction(cmd *cobra.Command, query string, v interface{}, transform func() carapace.Action) carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		params := make([]string, 0)
 		if strings.Contains(query, "$owner") {
 			params = append(params, "$owner: String!")
@@ -105,7 +105,7 @@ func repoOverride(cmd *cobra.Command) (ghrepo.Interface, error) {
 }
 
 func ActionAuthScopes() carapace.Action {
-	return carapace.ActionCallback(func(args []string) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		return carapace.ActionValuesDescribed(
 			"repo", "Grants full access to private and public repositories.",
 			"repo:status", "Grants read/write access to public and private repository commit statuses.",
@@ -139,7 +139,7 @@ func ActionAuthScopes() carapace.Action {
 			"write:gpg_key", "Create, list, and view details for GPG keys.",
 			"read:gpg_key", "List and view details for GPG keys.",
 			"workflow", "Grants the ability to add and update GitHub Actions workflow files.",
-		).Invoke(args).ToMultiPartsA(":")
+		).Invoke(c).ToMultiPartsA(":")
 	})
 }
 

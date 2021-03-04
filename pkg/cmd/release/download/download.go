@@ -84,9 +84,9 @@ func NewCmdDownload(f *cmdutil.Factory, runF func(*DownloadOptions) error) *cobr
 	cmdutil.DeferCompletion(func() {
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
 			"dir": carapace.ActionDirectories(),
-			"pattern": carapace.ActionCallback(func(args []string) carapace.Action {
-				if len(args) > 0 {
-					return action.ActionReleaseAssets(cmd, args[0])
+			"pattern": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+				if len(c.Args) > 0 {
+					return action.ActionReleaseAssets(cmd, c.Args[0])
 				} else {
 					return carapace.ActionValues()
 				}
