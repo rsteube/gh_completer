@@ -224,6 +224,7 @@ func NewCmdApi(f *cmdutil.Factory, runF func(*ApiOptions) error) *cobra.Command 
 			"hostname": action.ActionConfigHosts(),
 			"method":   action.ActionHttpMethods(),
 			"input":    carapace.ActionFiles(""),
+			"preview":  action.ActionApiPreviews(),
 		})
 	})
 	return cmd
