@@ -2,7 +2,7 @@
 
 [gh](https://github.com/cli/cli) with dynamic completion
 
-> continued work in the [better-completions](https://github.com/rsteube/gh/tree/better-completions) branch
+> continued work in the [better-completions](https://github.com/rsteube/gh/tree/better-completions) branch (https://github.com/cli/cli/pull/2728)
 
 [![asciicast](https://asciinema.org/a/358690.svg)](https://asciinema.org/a/358690)
 
