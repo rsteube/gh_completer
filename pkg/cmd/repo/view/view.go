@@ -75,6 +75,7 @@ With '--branch', view a specific branch of the repository.`,
 		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
 			"branch": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 				if len(c.Args) > 0 {
+					cmd.Flags().String("repo", c.Args[0], "fake repo flag for ActionBranches")
 					return action.ActionBranches(cmd)
 				} else {
 					return carapace.ActionValues()
