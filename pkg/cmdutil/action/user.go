@@ -91,6 +91,10 @@ func (u UserOpts) format() string {
 
 func ActionUsers(cmd *cobra.Command, opts *UserOpts) carapace.Action {
 	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+		if len(c.CallbackValue) < 2 {
+			return carapace.ActionMessage("user search needs at least two characters")
+		}
+
 		var queryResult userQuery
 		return GraphQlAction(cmd, fmt.Sprintf(`search(query: "%v in:login", type: USER, first: 100) { edges { node { %v } } }`, c.CallbackValue, opts.format()), &queryResult, func() carapace.Action {
 			users := queryResult.Data.Search.Edges
