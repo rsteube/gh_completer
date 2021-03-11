@@ -58,11 +58,7 @@ func ActionOwnerRepositories(cmd *cobra.Command) carapace.Action {
 
 		switch len(c.Parts) {
 		case 0:
-			if c.CallbackValue == "" {
-				return carapace.ActionValues()
-			} else {
-				return ActionUsers(cmd, &UserOpts{Users: true, Organizations: true}).Invoke(c).Suffix("/").ToA()
-			}
+			return ActionUsers(cmd, &UserOpts{Users: true, Organizations: true}).Invoke(c).Suffix("/").ToA()
 		case 1:
 			_ = cmd.Flag("repo").Value.Set(c.Parts[0] + "/" + c.CallbackValue) // TODO part of the repo hack
 			return ActionRepositories(cmd, c.Parts[0], c.CallbackValue)
