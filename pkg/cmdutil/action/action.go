@@ -3,6 +3,7 @@ package action
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -156,4 +157,19 @@ func byteCountSI(b int) string {
 	}
 	return fmt.Sprintf("%.1f %cB",
 		float64(b)/float64(div), "kMGTPE"[exp])
+}
+
+func defaultUser() (user string, err error) {
+	var cfg config.Config
+	if cfg, err = config.ParseDefaultConfig(); err == nil {
+		var hosts []string
+		if hosts, err = cfg.Hosts(); err == nil {
+			if len(hosts) < 1 {
+				err = errors.New("could not retrieve default user")
+			} else {
+				user, err = cfg.Get(hosts[0], "user")
+			}
+		}
+	}
+	return
 }
