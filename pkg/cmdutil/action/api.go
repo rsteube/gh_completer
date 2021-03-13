@@ -47,9 +47,6 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 	path:
 		for _, path := range v3Paths {
 			segments := strings.Split(path, "/")
-			if len(segments) <= len(c.Parts) {
-				continue path // skip path as it is shorter than what was entered
-			}
 		segment:
 			for index, segment := range segments {
 				if index > len(c.Parts)-1 {
@@ -65,6 +62,10 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 						staticMatches[index] = true // static segment matches so placeholders should be ignored for this index
 					}
 				}
+			}
+
+			if len(segments) < len(c.Parts)+1 {
+				continue path // skip path as it is shorter than what was entered (must be after staticMatches being set)
 			}
 
 			for key := range staticMatches {
