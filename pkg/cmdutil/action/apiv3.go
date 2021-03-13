@@ -1,5 +1,7 @@
 package action
 
+import "github.com/rsteube/carapace"
+
 // https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json
 //    cat api.github.com.json | jq '.paths | keys[]' | sed -e 's_/__' -e 's/$/,/'
 var v3Paths []string = []string{
@@ -476,4 +478,8 @@ var v3Paths []string = []string{
 	"users/{username}/starred",
 	"users/{username}/subscriptions",
 	"zen",
+}
+
+func ActionPackageTypes() carapace.Action {
+	return carapace.ActionValues("npm", "maven", "rubygems", "nuget", "docker", "container")
 }
