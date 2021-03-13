@@ -231,7 +231,7 @@ func NewCmdApi(f *cmdutil.Factory, runF func(*ApiOptions) error) *cobra.Command 
 
 		carapace.Gen(cmd).PositionalCompletion(
 			carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-				v3 := action.ActionApiV3Paths().Invoke(c)
+				v3 := action.ActionApiV3Paths(cmd).Invoke(c)
 				graphql := carapace.ActionValues("graphql").Invoke(c)
 				return v3.Merge(graphql).ToA()
 			}),
