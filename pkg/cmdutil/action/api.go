@@ -79,30 +79,40 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 		for key := range matchedSegments {
 			switch key {
 			// TODO completion for other placeholders
+			case "{assignee}":
+				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
+				cmd.Flag("repo").Changed = true
+				actions = append(actions, ActionAssignableUsers(cmd).Invoke(c))
+			case "{branch}":
+				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
+				cmd.Flag("repo").Changed = true
+				actions = append(actions, ActionBranches(cmd).Invoke(c))
 			case "{gist_id}":
 				actions = append(actions, ActionGists(cmd).Invoke(c))
-			case "{username}":
-				actions = append(actions, ActionUsers(cmd, &UserOpts{Users: true}).Invoke(c))
+			case "{issue_number}":
+				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
+				cmd.Flag("repo").Changed = true
+				actions = append(actions, ActionIssues(cmd, IssueOpts{Open: true, Closed: true}).Invoke(c))
 			case "{owner}":
 				if strings.HasPrefix(c.CallbackValue, ":") {
 					actions = append(actions, carapace.ActionValues(":owner").Invoke(c))
 				} else {
 					actions = append(actions, ActionUsers(cmd, &UserOpts{Users: true, Organizations: true}).Invoke(c))
 				}
+			case "{package_type}":
+				actions = append(actions, ActionPackageTypes().Invoke(c))
 			case "{repo}":
 				if strings.HasPrefix(c.CallbackValue, ":") {
 					actions = append(actions, carapace.ActionValues(":repo").Invoke(c))
 				} else {
 					actions = append(actions, ActionRepositories(cmd, matchedData["{owner}"], c.CallbackValue).Invoke(c))
 				}
-			case "{issue_number}":
-				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
-				cmd.Flag("repo").Changed = true
-				actions = append(actions, ActionIssues(cmd, IssueOpts{Open: true, Closed: true}).Invoke(c))
 			case "{tag}": // only used with releases
 				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
 				cmd.Flag("repo").Changed = true
 				actions = append(actions, ActionReleases(cmd).Invoke(c))
+			case "{username}":
+				actions = append(actions, ActionUsers(cmd, &UserOpts{Users: true}).Invoke(c))
 			default:
 				// static value or placeholder not yet handled
 				actions = append(actions, carapace.ActionValues(key).Invoke(c))
