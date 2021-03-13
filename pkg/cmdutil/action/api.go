@@ -100,6 +100,8 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 				} else {
 					actions = append(actions, ActionUsers(cmd, &UserOpts{Users: true, Organizations: true}).Invoke(c))
 				}
+			case "{org}":
+				actions = append(actions, ActionUsers(cmd, &UserOpts{Organizations: true}).Invoke(c))
 			case "{package_type}":
 				actions = append(actions, ActionPackageTypes().Invoke(c))
 			case "{repo}":
