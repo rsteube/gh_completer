@@ -18,6 +18,9 @@ eval (gh _carapace|slurp)
 # fish
 gh _carapace | source
 
+# oil
+source <(gh _carapace)
+
 # powershell
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
 gh _carapace | Out-String | Invoke-Expression
