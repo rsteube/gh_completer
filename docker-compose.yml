@@ -21,6 +21,10 @@ services:
   fish:
     <<: *base
     command: fish
+  
+  oil:
+    <<: *base
+    command: osh --completion-display minimal
 
   powershell:
     <<: *base
