@@ -48,11 +48,5 @@ services:
     <<: *base
     command: zsh
 
-  test:
-    <<: *base
-    working_dir: /carapace
-    command: go test -v ./...
-
-
 volumes:
   go:
