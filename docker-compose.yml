@@ -2,13 +2,15 @@ version: '3'
 
 services:
   build: &base
-    build: .
+    image: rsteube/carapace:0.5.1
     command: sh -c 'sh -c "cd /gh/cmd/gh/ && go build -ldflags=\"-s -w\" ."'
+    environment:
+      TARGET: /gh/cmd/gh/gh
+      GITHUB_TOKEN: $GITHUB_TOKEN
+    working_dir: /gh
     volumes:
       - '.:/gh/'
-      - 'go:/go/'
-    environment:
-      GITHUB_TOKEN: $GITHUB_TOKEN
+      - 'go:/home/circleci/go/'
 
   bash:
     <<: *base
@@ -21,6 +23,14 @@ services:
   fish:
     <<: *base
     command: fish
+  
+  ion:
+    <<: *base
+    command: ion
+  
+  nushell:
+    <<: *base
+    command: nu
   
   oil:
     <<: *base
@@ -37,6 +47,12 @@ services:
   zsh:
     <<: *base
     command: zsh
+
+  test:
+    <<: *base
+    working_dir: /carapace
+    command: go test -v ./...
+
 
 volumes:
   go:
