@@ -150,6 +150,10 @@ func NewCmdReview(f *cmdutil.Factory, runF func(*ReviewOptions) error) *cobra.Co
 	cmd.Flags().StringVarP(&bodyFile, "body-file", "F", "", "Read body text from `file`")
 
 	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"body-file": carapace.ActionFiles(),
+		})
+
 		carapace.Gen(cmd).PositionalCompletion(
 			action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
 		)

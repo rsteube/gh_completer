@@ -165,6 +165,7 @@ func NewCmdEdit(f *cmdutil.Factory, runF func(*EditOptions) error) *cobra.Comman
 			"add-reviewer": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
 				return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
 			}),
+			"body-file": carapace.ActionFiles(),
 			"milestone": action.ActionMilestones(cmd),
 			// TODO remove-reviewer, remove-assignee, remove-label, remove-project
 		})
