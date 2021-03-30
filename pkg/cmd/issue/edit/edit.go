@@ -139,6 +139,7 @@ func NewCmdEdit(f *cmdutil.Factory, runF func(*EditOptions) error) *cobra.Comman
 				return action.ActionLabels(cmd).Invoke(c).Filter(c.Parts).ToA()
 			}),
 			"add-project": action.ActionProjects(cmd, action.ProjectOpts{Open: true}),
+			"body-file":   carapace.ActionFiles(),
 			"milestone":   action.ActionMilestones(cmd),
 			// TODO remove-assignee, remove-label, remove-project
 		})

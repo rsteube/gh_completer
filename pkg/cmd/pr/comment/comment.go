@@ -67,6 +67,10 @@ func NewCmdComment(f *cmdutil.Factory, runF func(*shared.CommentableOptions) err
 	cmd.Flags().BoolP("web", "w", false, "Add body in browser")
 
 	cmdutil.DeferCompletion(func() {
+		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+			"body-file": carapace.ActionFiles(),
+		})
+
 		carapace.Gen(cmd).PositionalCompletion(
 			action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
 		)
