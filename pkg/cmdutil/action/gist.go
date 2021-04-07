@@ -33,7 +33,15 @@ func ActionGistUrls(cmd *cobra.Command) carapace.Action {
 	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		prefix := "https://gist."
 		if !strings.HasPrefix(c.CallbackValue, prefix) {
-			return carapace.ActionValues(prefix)
+			// ActionMultiParts to force nospace (should maybe added as function to InvokedAction to prevent space suffix)
+			return carapace.ActionMultiParts(".", func(c carapace.Context) carapace.Action {
+				switch len(c.Parts) {
+				case 0:
+					return carapace.ActionValues(prefix)
+				default:
+					return carapace.ActionValues()
+				}
+			})
 		} else {
 			c.CallbackValue = strings.TrimPrefix(c.CallbackValue, prefix)
 			return carapace.ActionMultiParts("/", func(c carapace.Context) carapace.Action {
