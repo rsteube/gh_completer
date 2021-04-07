@@ -104,6 +104,8 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 				actions = append(actions, ActionUsers(cmd, &UserOpts{Organizations: true}).Invoke(c))
 			case "{package_type}":
 				actions = append(actions, ActionPackageTypes().Invoke(c))
+			case "{pull_number}":
+				actions = append(actions, ActionPullRequests(cmd, PullRequestOpts{Open: true, Closed: true, Merged: true}).Invoke(c))
 			case "{repo}":
 				if strings.HasPrefix(c.CallbackValue, ":") {
 					actions = append(actions, carapace.ActionValues(":repo").Invoke(c))
