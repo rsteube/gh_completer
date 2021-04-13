@@ -39,6 +39,26 @@ func ActionHttpMethods() carapace.Action {
 	)
 }
 
+func ApiV3Action(cmd *cobra.Command, query string, v interface{}, transform func() carapace.Action) carapace.Action {
+	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+		if repo, err := repoOverride(cmd); err != nil {
+			return carapace.ActionMessage(err.Error())
+		} else {
+			var stderr bytes.Buffer
+			cmd := exec.Command("gh", "api", "--hostname", repo.RepoHost(), query)
+			cmd.Stderr = &stderr
+			if output, err := cmd.Output(); err != nil {
+				return carapace.ActionMessage("failed to execute query:" + stderr.String())
+			} else {
+				if err := json.Unmarshal(output, &v); err != nil {
+					return carapace.ActionMessage("failed to unmarshall response: " + err.Error())
+				}
+				return transform()
+			}
+		}
+	})
+}
+
 func GraphQlAction(cmd *cobra.Command, query string, v interface{}, transform func() carapace.Action) carapace.Action {
 	return carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 		params := make([]string, 0)
