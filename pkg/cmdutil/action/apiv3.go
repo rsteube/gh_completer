@@ -3,7 +3,7 @@ package action
 import "github.com/rsteube/carapace"
 
 // https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json
-//    cat api.github.com.json | jq '.paths | keys[]' | sed -e 's_/__' -e 's/$/,/'
+//    cat api.github.com.json | jq '.paths | keys[]' | sed -e 's_/__' -e 's/$/,/' -e 's#gitignore/templates/{name}#gitignore/templates/{gitignore_name}#'
 var v3Paths []string = []string{
 	"app",
 	"app-manifests/{code}/conversions",
@@ -60,7 +60,7 @@ var v3Paths []string = []string{
 	"gists/{gist_id}/star",
 	"gists/{gist_id}/{sha}",
 	"gitignore/templates",
-	"gitignore/templates/{name}",
+	"gitignore/templates/{gitignore_name}",
 	"installation/repositories",
 	"installation/token",
 	"issues",

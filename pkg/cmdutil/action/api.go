@@ -90,6 +90,8 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 				actions = append(actions, ActionBranches(cmd).Invoke(c))
 			case "{gist_id}":
 				actions = append(actions, ActionGists(cmd).Invoke(c))
+			case "{gitignore_name}":
+				actions = append(actions, ActionGitignoreTemplates(cmd).Invoke(c))
 			case "{issue_number}":
 				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
 				cmd.Flag("repo").Changed = true
