@@ -107,6 +107,8 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 			case "{package_type}":
 				actions = append(actions, ActionPackageTypes().Invoke(c))
 			case "{pull_number}":
+				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
+				cmd.Flag("repo").Changed = true
 				actions = append(actions, ActionPullRequests(cmd, PullRequestOpts{Open: true, Closed: true, Merged: true}).Invoke(c))
 			case "{repo}":
 				if strings.HasPrefix(c.CallbackValue, ":") {
