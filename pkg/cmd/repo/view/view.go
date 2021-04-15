@@ -71,22 +71,20 @@ With '--branch', view a specific branch of the repository.`,
 	cmd.Flags().BoolVarP(&opts.Web, "web", "w", false, "Open a repository in the browser")
 	cmd.Flags().StringVarP(&opts.Branch, "branch", "b", "", "View a specific branch of the repository")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"branch": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-				if len(c.Args) > 0 {
-					cmd.Flags().String("repo", c.Args[0], "fake repo flag for ActionBranches")
-					return action.ActionBranches(cmd)
-				} else {
-					return carapace.ActionValues()
-				}
-			}),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionOwnerRepositories(cmd),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"branch": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			if len(c.Args) > 0 {
+				cmd.Flags().String("repo", c.Args[0], "fake repo flag for ActionBranches")
+				return action.ActionBranches(cmd)
+			} else {
+				return carapace.ActionValues()
+			}
+		}),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionOwnerRepositories(cmd),
+	)
 
 	return cmd
 }

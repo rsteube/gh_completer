@@ -74,13 +74,11 @@ func NewCmdRefresh(f *cmdutil.Factory, runF func(*RefreshOptions) error) *cobra.
 	cmd.Flags().StringVarP(&opts.Hostname, "hostname", "h", "", "The GitHub host to use for authentication")
 	cmd.Flags().StringSliceVarP(&opts.Scopes, "scopes", "s", nil, "Additional authentication scopes for gh to have")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"hostname": action.ActionConfigHosts(),
-			"scopes": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return action.ActionAuthScopes().Invoke(c).Filter(c.Parts).ToA()
-			}),
-		})
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"hostname": action.ActionConfigHosts(),
+		"scopes": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return action.ActionAuthScopes().Invoke(c).Filter(c.Parts).ToA()
+		}),
 	})
 
 	return cmd

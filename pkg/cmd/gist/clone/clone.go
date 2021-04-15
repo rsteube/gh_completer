@@ -66,12 +66,11 @@ func NewCmdClone(f *cmdutil.Factory, runF func(*CloneOptions) error) *cobra.Comm
 		return &cmdutil.FlagError{Err: fmt.Errorf("%w\nSeparate git clone flags with '--'.", err)}
 	})
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionGists(cmd),
-			carapace.ActionDirectories(),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionGists(cmd),
+		carapace.ActionDirectories(),
+	)
+
 	return cmd
 }
 

@@ -68,22 +68,20 @@ func NewCmdEdit(f *cmdutil.Factory, runF func(*EditOptions) error) *cobra.Comman
 	cmd.Flags().StringVarP(&opts.AddFilename, "add", "a", "", "Add a new file to the gist")
 	cmd.Flags().StringVarP(&opts.EditFilename, "filename", "f", "", "Select a file to edit")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"add": carapace.ActionFiles(),
-			"filename": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-				if len(c.Args) > 0 {
-					return action.ActionGistFiles(cmd, c.Args[0])
-				} else {
-					return carapace.ActionValues()
-				}
-			}),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionGists(cmd),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"add": carapace.ActionFiles(),
+		"filename": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			if len(c.Args) > 0 {
+				return action.ActionGistFiles(cmd, c.Args[0])
+			} else {
+				return carapace.ActionValues()
+			}
+		}),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionGists(cmd),
+	)
 
 	return cmd
 }

@@ -126,11 +126,9 @@ func NewCmdCreate(f *cmdutil.Factory, runF func(*CreateOptions) error) *cobra.Co
 	cmd.Flags().BoolVar(&opts.Internal, "internal", false, "Make the new repository internal")
 	cmd.Flags().BoolVarP(&opts.ConfirmSubmit, "confirm", "y", false, "Skip the confirmation prompt")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			// TODO team
-			"template": action.ActionOwnerRepositories(cmd),
-		})
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		// TODO team
+		"template": action.ActionOwnerRepositories(cmd),
 	})
 
 	return cmd

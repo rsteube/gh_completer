@@ -130,24 +130,22 @@ func NewCmdEdit(f *cmdutil.Factory, runF func(*EditOptions) error) *cobra.Comman
 	cmd.Flags().StringSliceVar(&opts.Editable.Projects.Remove, "remove-project", nil, "Remove the issue from projects by `name`")
 	cmd.Flags().StringVarP(&opts.Editable.Milestone.Value, "milestone", "m", "", "Edit the milestone the issue belongs to by `name`")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"add-assignee": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
-			}),
-			"add-label": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return action.ActionLabels(cmd).Invoke(c).Filter(c.Parts).ToA()
-			}),
-			"add-project": action.ActionProjects(cmd, action.ProjectOpts{Open: true}),
-			"body-file":   carapace.ActionFiles(),
-			"milestone":   action.ActionMilestones(cmd),
-			// TODO remove-assignee, remove-label, remove-project
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionIssues(cmd, action.IssueOpts{Open: true}),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"add-assignee": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
+		}),
+		"add-label": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return action.ActionLabels(cmd).Invoke(c).Filter(c.Parts).ToA()
+		}),
+		"add-project": action.ActionProjects(cmd, action.ProjectOpts{Open: true}),
+		"body-file":   carapace.ActionFiles(),
+		"milestone":   action.ActionMilestones(cmd),
+		// TODO remove-assignee, remove-label, remove-project
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionIssues(cmd, action.IssueOpts{Open: true}),
+	)
 
 	return cmd
 }

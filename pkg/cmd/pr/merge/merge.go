@@ -157,15 +157,13 @@ func NewCmdMerge(f *cmdutil.Factory, runF func(*MergeOptions) error) *cobra.Comm
 	cmd.Flags().BoolVar(&opts.AutoMergeEnable, "auto", false, "Automatically merge only after necessary requirements are met")
 	cmd.Flags().BoolVar(&opts.AutoMergeDisable, "disable-auto", false, "Disable auto-merge for this pull request")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"body-file": carapace.ActionFiles(),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"body-file": carapace.ActionFiles(),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
+	)
 
 	return cmd
 }

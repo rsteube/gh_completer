@@ -81,22 +81,20 @@ func NewCmdDownload(f *cmdutil.Factory, runF func(*DownloadOptions) error) *cobr
 	cmd.Flags().StringVarP(&opts.Destination, "dir", "D", ".", "The directory to download files into")
 	cmd.Flags().StringArrayVarP(&opts.FilePatterns, "pattern", "p", nil, "Download only assets that match a glob pattern")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"dir": carapace.ActionDirectories(),
-			"pattern": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-				if len(c.Args) > 0 {
-					return action.ActionReleaseAssets(cmd, c.Args[0])
-				} else {
-					return carapace.ActionValues()
-				}
-			}),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionReleases(cmd),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"dir": carapace.ActionDirectories(),
+		"pattern": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			if len(c.Args) > 0 {
+				return action.ActionReleaseAssets(cmd, c.Args[0])
+			} else {
+				return carapace.ActionValues()
+			}
+		}),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionReleases(cmd),
+	)
 
 	return cmd
 }

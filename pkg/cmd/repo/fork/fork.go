@@ -113,11 +113,9 @@ Additional 'git clone' flags can be passed in by listing them after '--'.`,
 	cmd.Flags().BoolVar(&opts.Remote, "remote", false, "Add remote for fork {true|false}")
 	cmd.Flags().StringVar(&opts.RemoteName, "remote-name", "origin", "Specify a name for a fork's new remote.")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionOwnerRepositories(cmd),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionOwnerRepositories(cmd),
+	)
 
 	return cmd
 }

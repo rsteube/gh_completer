@@ -114,19 +114,17 @@ func NewCmdSet(f *cmdutil.Factory, runF func(*SetOptions) error) *cobra.Command 
 	cmd.Flags().StringSliceVarP(&opts.RepositoryNames, "repos", "r", []string{}, "List of repository names for `selected` visibility")
 	cmd.Flags().StringVarP(&opts.Body, "body", "b", "", "A value for the secret. Reads from STDIN if not specified.")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"org": action.ActionUsers(cmd, &action.UserOpts{Organizations: true}),
-			"repos": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return action.ActionOwnerRepositories(cmd).Invoke(c).Filter(c.Parts).ToA()
-			}),
-			"visibility": carapace.ActionValues("all", "private", "selected"),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionSecrets(cmd, cmd.Flag("org").Value.String()),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"org": action.ActionUsers(cmd, &action.UserOpts{Organizations: true}),
+		"repos": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return action.ActionOwnerRepositories(cmd).Invoke(c).Filter(c.Parts).ToA()
+		}),
+		"visibility": carapace.ActionValues("all", "private", "selected"),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionSecrets(cmd, cmd.Flag("org").Value.String()),
+	)
 
 	return cmd
 }

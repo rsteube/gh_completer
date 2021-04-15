@@ -2,21 +2,14 @@ package cmdutil
 
 import (
 	"github.com/cli/cli/pkg/cmdutil/action"
+	"github.com/rsteube/carapace"
 	"github.com/spf13/cobra"
 )
 
-var completions = make([]func(), 0)
-
-// DeferCompletion defers completion configuration until the command stucture is finalized (carapace requirement)
-func DeferCompletion(completion func()) {
-	completions = append(completions, completion)
-}
-
 // InitCompletions finalizes completion configuration
+// TODO move to root cmd
 func InitCompletions(cmd *cobra.Command) {
-	for _, completion := range completions {
-		completion()
-	}
+    carapace.Gen(cmd).Root()
 	addAliasCompletion(cmd)
 }
 

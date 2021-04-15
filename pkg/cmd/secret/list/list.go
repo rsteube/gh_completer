@@ -54,10 +54,8 @@ func NewCmdList(f *cmdutil.Factory, runF func(*ListOptions) error) *cobra.Comman
 
 	cmd.Flags().StringVarP(&opts.OrgName, "org", "o", "", "List secrets for an organization")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"org": action.ActionUsers(cmd, &action.UserOpts{Organizations: true}),
-		})
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"org": action.ActionUsers(cmd, &action.UserOpts{Organizations: true}),
 	})
 
 	return cmd

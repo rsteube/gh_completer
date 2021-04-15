@@ -53,12 +53,10 @@ func NewCmdTransfer(f *cmdutil.Factory, runF func(*TransferOptions) error) *cobr
 		},
 	}
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionIssues(cmd, action.IssueOpts{Open: true, Closed: true}),
-			action.ActionOwnerRepositories(cmd),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionIssues(cmd, action.IssueOpts{Open: true, Closed: true}),
+		action.ActionOwnerRepositories(cmd),
+	)
 
 	return cmd
 }
