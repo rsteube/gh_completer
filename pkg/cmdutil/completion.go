@@ -9,7 +9,7 @@ import (
 // InitCompletions finalizes completion configuration
 // TODO move to root cmd
 func InitCompletions(cmd *cobra.Command) {
-    carapace.Gen(cmd).Root()
+	carapace.Gen(cmd).Root()
 	addAliasCompletion(cmd)
 }
 
