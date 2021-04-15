@@ -118,13 +118,11 @@ func NewCmdLogin(f *cmdutil.Factory, runF func(*LoginOptions) error) *cobra.Comm
 	cmd.Flags().BoolVar(&tokenStdin, "with-token", false, "Read token from standard input")
 	cmd.Flags().BoolVarP(&opts.Web, "web", "w", false, "Open a browser to authenticate")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"hostname": action.ActionConfigHosts(),
-			"scopes": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return action.ActionAuthScopes().Invoke(c).Filter(c.Parts).ToA()
-			}),
-		})
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"hostname": action.ActionConfigHosts(),
+		"scopes": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return action.ActionAuthScopes().Invoke(c).Filter(c.Parts).ToA()
+		}),
 	})
 
 	return cmd

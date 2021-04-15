@@ -58,11 +58,9 @@ func NewCmdClose(f *cmdutil.Factory, runF func(*CloseOptions) error) *cobra.Comm
 	}
 	cmd.Flags().BoolVarP(&opts.DeleteBranch, "delete-branch", "d", false, "Delete the local and remote branch after close")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
+	)
 
 	return cmd
 }

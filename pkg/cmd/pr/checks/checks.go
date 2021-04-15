@@ -79,15 +79,13 @@ func NewCmdChecks(f *cmdutil.Factory, runF func(*ChecksOptions) error) *cobra.Co
 
 	cmd.Flags().BoolVarP(&opts.WebMode, "web", "w", false, "Open the web browser to show details about checks")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-				pullRequests := action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}).Invoke(c)
-				branches := action.ActionBranches(cmd).Invoke(c)
-				return pullRequests.Merge(branches).ToA()
-			}),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			pullRequests := action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}).Invoke(c)
+			branches := action.ActionBranches(cmd).Invoke(c)
+			return pullRequests.Merge(branches).ToA()
+		}),
+	)
 
 	return cmd
 }

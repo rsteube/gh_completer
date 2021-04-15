@@ -176,22 +176,20 @@ func NewCmdCreate(f *cmdutil.Factory, runF func(*CreateOptions) error) *cobra.Co
 	fl.Bool("no-maintainer-edit", false, "Disable maintainer's ability to modify pull request")
 	fl.StringVar(&opts.RecoverFile, "recover", "", "Recover input from a failed run of create")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"assignee": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
-			}),
-			"base": action.ActionBranches(cmd),
-			"head": action.ActionBranches(cmd),
-			"label": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return action.ActionLabels(cmd).Invoke(c).Filter(c.Parts).ToA()
-			}),
-			"milestone": action.ActionMilestones(cmd),
-			"project":   action.ActionProjects(cmd, action.ProjectOpts{Open: true}),
-			"reviewer": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
-			}),
-		})
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"assignee": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
+		}),
+		"base": action.ActionBranches(cmd),
+		"head": action.ActionBranches(cmd),
+		"label": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return action.ActionLabels(cmd).Invoke(c).Filter(c.Parts).ToA()
+		}),
+		"milestone": action.ActionMilestones(cmd),
+		"project":   action.ActionProjects(cmd, action.ProjectOpts{Open: true}),
+		"reviewer": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return action.ActionAssignableUsers(cmd).Invoke(c).Filter(c.Parts).ToA()
+		}),
 	})
 
 	return cmd

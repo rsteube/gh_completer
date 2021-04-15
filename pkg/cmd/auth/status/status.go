@@ -53,10 +53,8 @@ func NewCmdStatus(f *cmdutil.Factory, runF func(*StatusOptions) error) *cobra.Co
 	cmd.Flags().StringVarP(&opts.Hostname, "hostname", "h", "", "Check a specific hostname's auth status")
 	cmd.Flags().BoolVarP(&opts.ShowToken, "show-token", "t", false, "Display the auth token")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"hostname": action.ActionConfigHosts(),
-		})
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"hostname": action.ActionConfigHosts(),
 	})
 
 	return cmd

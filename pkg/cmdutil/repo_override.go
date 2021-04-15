@@ -25,10 +25,7 @@ func EnableRepoOverride(cmd *cobra.Command, f *Factory) {
 		}
 	}
 
-	DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"repo": action.ActionOwnerRepositories(cmd),
-		})
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"repo": action.ActionOwnerRepositories(cmd),
 	})
-
 }

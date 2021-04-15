@@ -68,21 +68,19 @@ func NewCmdUpload(f *cmdutil.Factory, runF func(*UploadOptions) error) *cobra.Co
 
 	cmd.Flags().BoolVar(&opts.OverwriteExisting, "clobber", false, "Overwrite existing assets of the same name")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionReleases(cmd),
-		)
-		carapace.Gen(cmd).PositionalAnyCompletion(
-			carapace.ActionMultiParts("#", func(c carapace.Context) carapace.Action {
-				switch len(c.Parts) {
-				case 0:
-					return carapace.ActionFiles("")
-				default:
-					return carapace.ActionValues()
-				}
-			}),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionReleases(cmd),
+	)
+	carapace.Gen(cmd).PositionalAnyCompletion(
+		carapace.ActionMultiParts("#", func(c carapace.Context) carapace.Action {
+			switch len(c.Parts) {
+			case 0:
+				return carapace.ActionFiles("")
+			default:
+				return carapace.ActionValues()
+			}
+		}),
+	)
 
 	return cmd
 }

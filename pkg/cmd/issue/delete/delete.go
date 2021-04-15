@@ -53,11 +53,9 @@ func NewCmdDelete(f *cmdutil.Factory, runF func(*DeleteOptions) error) *cobra.Co
 		},
 	}
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionIssues(cmd, action.IssueOpts{Open: true, Closed: true}),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionIssues(cmd, action.IssueOpts{Open: true, Closed: true}),
+	)
 
 	return cmd
 }

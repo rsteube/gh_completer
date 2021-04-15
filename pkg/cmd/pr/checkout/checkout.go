@@ -68,11 +68,9 @@ func NewCmdCheckout(f *cmdutil.Factory, runF func(*CheckoutOptions) error) *cobr
 	cmd.Flags().BoolVarP(&opts.Force, "force", "f", false, "Reset the existing local branch to the latest state of the pull request")
 	cmd.Flags().BoolVarP(&opts.Detach, "detach", "", false, "Checkout PR with a detached HEAD")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
+	)
 
 	return cmd
 }
