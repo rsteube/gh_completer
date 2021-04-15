@@ -73,21 +73,19 @@ func NewCmdView(f *cmdutil.Factory, runF func(*ViewOptions) error) *cobra.Comman
 	cmd.Flags().BoolVarP(&opts.ListFiles, "files", "", false, "List file names from the gist")
 	cmd.Flags().StringVarP(&opts.Filename, "filename", "f", "", "Display a single file from the gist")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"filename": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-				if len(c.Args) > 0 {
-					return action.ActionGistFiles(cmd, c.Args[0])
-				} else {
-					return carapace.ActionValues()
-				}
-			}),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionGists(cmd),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"filename": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			if len(c.Args) > 0 {
+				return action.ActionGistFiles(cmd, c.Args[0])
+			} else {
+				return carapace.ActionValues()
+			}
+		}),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionGists(cmd),
+	)
 
 	return cmd
 }

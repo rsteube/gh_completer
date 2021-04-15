@@ -219,24 +219,23 @@ func NewCmdApi(f *cmdutil.Factory, runF func(*ApiOptions) error) *cobra.Command 
 	cmd.Flags().StringVarP(&opts.FilterOutput, "jq", "q", "", "Query to select values from the response using jq syntax")
 	cmd.Flags().DurationVar(&opts.CacheTTL, "cache", 0, "Cache the response, e.g. \"3600s\", \"60m\", \"1h\"")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"hostname": action.ActionConfigHosts(),
-			"method":   action.ActionHttpMethods(),
-			"input":    carapace.ActionFiles(""),
-			"preview": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return action.ActionApiPreviews().Invoke(c).Filter(c.Parts).ToA()
-			}),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-				v3 := action.ActionApiV3Paths(cmd).Invoke(c)
-				graphql := carapace.ActionValues("graphql").Invoke(c)
-				return v3.Merge(graphql).ToA()
-			}),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"hostname": action.ActionConfigHosts(),
+		"method":   action.ActionHttpMethods(),
+		"input":    carapace.ActionFiles(""),
+		"preview": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return action.ActionApiPreviews().Invoke(c).Filter(c.Parts).ToA()
+		}),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			v3 := action.ActionApiV3Paths(cmd).Invoke(c)
+			graphql := carapace.ActionValues("graphql").Invoke(c)
+			return v3.Merge(graphql).ToA()
+		}),
+	)
+
 	return cmd
 }
 

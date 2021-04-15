@@ -53,11 +53,9 @@ func NewCmdAdd(f *cmdutil.Factory, runF func(*AddOptions) error) *cobra.Command 
 
 	cmd.Flags().StringVarP(&opts.Title, "title", "t", "", "Title for the new key")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			carapace.ActionFiles(),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		carapace.ActionFiles(),
+	)
 
 	return cmd
 }

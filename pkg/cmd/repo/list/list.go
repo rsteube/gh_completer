@@ -91,15 +91,13 @@ func NewCmdList(f *cmdutil.Factory, runF func(*ListOptions) error) *cobra.Comman
 	cmd.Flags().BoolVar(&opts.Archived, "archived", false, "Show only archived repositories")
 	cmd.Flags().BoolVar(&opts.NonArchived, "no-archived", false, "Omit archived repositories")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"language": action.ActionLanguages(),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionUsers(cmd, &action.UserOpts{Users: true, Organizations: true}),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"language": action.ActionLanguages(),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionUsers(cmd, &action.UserOpts{Users: true, Organizations: true}),
+	)
 
 	return cmd
 }

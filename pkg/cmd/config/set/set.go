@@ -57,34 +57,32 @@ func NewCmdConfigSet(f *cmdutil.Factory, runF func(*SetOptions) error) *cobra.Co
 
 	cmd.Flags().StringVarP(&opts.Hostname, "host", "h", "", "Set per-host setting")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"host": action.ActionConfigHosts(),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			carapace.ActionValuesDescribed(
-				"git_protocol", "What protocol to use when performing git operations.",
-				"editor", "What editor gh should run when creating issues, pull requests, etc.",
-				"prompt", "toggle interactive prompting in the terminal",
-				"pager", "the terminal pager program to send standard output to",
-			),
-			carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-				switch c.Args[0] {
-				case "git_protocol":
-					return carapace.ActionValues("ssh", "https")
-				case "editor":
-					return carapace.ActionValues("emacs", "micro", "nano", "nvim", "vi", "vim")
-				case "prompt":
-					return carapace.ActionValues("enabled", "disabled")
-				case "pager":
-					return carapace.ActionValues("bat", "more", "most", "less")
-				default:
-					return carapace.ActionValues()
-				}
-			}),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"host": action.ActionConfigHosts(),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		carapace.ActionValuesDescribed(
+			"git_protocol", "What protocol to use when performing git operations.",
+			"editor", "What editor gh should run when creating issues, pull requests, etc.",
+			"prompt", "toggle interactive prompting in the terminal",
+			"pager", "the terminal pager program to send standard output to",
+		),
+		carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			switch c.Args[0] {
+			case "git_protocol":
+				return carapace.ActionValues("ssh", "https")
+			case "editor":
+				return carapace.ActionValues("emacs", "micro", "nano", "nvim", "vi", "vim")
+			case "prompt":
+				return carapace.ActionValues("enabled", "disabled")
+			case "pager":
+				return carapace.ActionValues("bat", "more", "most", "less")
+			default:
+				return carapace.ActionValues()
+			}
+		}),
+	)
 
 	return cmd
 }

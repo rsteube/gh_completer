@@ -58,14 +58,12 @@ func NewCmdComment(f *cmdutil.Factory, runF func(*prShared.CommentableOptions) e
 	cmd.Flags().BoolP("editor", "e", false, "Add body using editor")
 	cmd.Flags().BoolP("web", "w", false, "Add body in browser")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"body-file": carapace.ActionFiles(),
-		})
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionIssues(cmd, action.IssueOpts{Open: true}),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"body-file": carapace.ActionFiles(),
 	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionIssues(cmd, action.IssueOpts{Open: true}),
+	)
 
 	return cmd
 }

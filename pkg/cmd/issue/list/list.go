@@ -91,17 +91,15 @@ func NewCmdList(f *cmdutil.Factory, runF func(*ListOptions) error) *cobra.Comman
 	cmd.Flags().StringVarP(&opts.Search, "search", "S", "", "Search issues with `query`")
 	cmdutil.AddJSONFlags(cmd, &opts.Exporter, api.IssueFields)
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"assignee": action.ActionAssignableUsers(cmd),
-			"author":   action.ActionUsers(cmd, &action.UserOpts{Users: true}),
-			"label": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return action.ActionLabels(cmd).Invoke(c).Filter(c.Parts).ToA()
-			}),
-			"mention":   action.ActionAssignableUsers(cmd),
-			"milestone": action.ActionMilestones(cmd),
-			"state":     carapace.ActionValues("open", "closed", "all"),
-		})
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"assignee": action.ActionAssignableUsers(cmd),
+		"author":   action.ActionUsers(cmd, &action.UserOpts{Users: true}),
+		"label": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return action.ActionLabels(cmd).Invoke(c).Filter(c.Parts).ToA()
+		}),
+		"mention":   action.ActionAssignableUsers(cmd),
+		"milestone": action.ActionMilestones(cmd),
+		"state":     carapace.ActionValues("open", "closed", "all"),
 	})
 
 	return cmd

@@ -129,16 +129,14 @@ func NewCmdCreate(f *cmdutil.Factory, runF func(*CreateOptions) error) *cobra.Co
 	cmd.Flags().StringVarP(&opts.Body, "notes", "n", "", "Release notes")
 	cmd.Flags().StringVarP(&notesFile, "notes-file", "F", "", "Read release notes from `file`")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"target": action.ActionBranches(cmd),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionReleases(cmd),
-		)
-		carapace.Gen(cmd).PositionalAnyCompletion(carapace.ActionFiles(""))
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"target": action.ActionBranches(cmd),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionReleases(cmd),
+	)
+	carapace.Gen(cmd).PositionalAnyCompletion(carapace.ActionFiles(""))
 
 	return cmd
 }

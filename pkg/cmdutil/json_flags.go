@@ -62,12 +62,10 @@ func AddJSONFlags(cmd *cobra.Command, exportTarget *Exporter, fields []string) {
 		return c.Parent().FlagErrorFunc()(c, e)
 	})
 
-	DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"json": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
-				return carapace.ActionValues(fields...).Invoke(c).Filter(c.Parts).ToA()
-			}),
-		})
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"json": carapace.ActionMultiParts(",", func(c carapace.Context) carapace.Action {
+			return carapace.ActionValues(fields...).Invoke(c).Filter(c.Parts).ToA()
+		}),
 	})
 }
 

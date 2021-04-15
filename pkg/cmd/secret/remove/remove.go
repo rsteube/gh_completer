@@ -50,17 +50,15 @@ func NewCmdRemove(f *cmdutil.Factory, runF func(*RemoveOptions) error) *cobra.Co
 	}
 	cmd.Flags().StringVarP(&opts.OrgName, "org", "o", "", "List secrets for an organization")
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-			"org": action.ActionUsers(cmd, &action.UserOpts{Organizations: true}),
-		})
-
-		carapace.Gen(cmd).PositionalCompletion(
-			carapace.ActionCallback(func(c carapace.Context) carapace.Action {
-				return action.ActionSecrets(cmd, cmd.Flag("org").Value.String())
-			}),
-		)
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"org": action.ActionUsers(cmd, &action.UserOpts{Organizations: true}),
 	})
+
+	carapace.Gen(cmd).PositionalCompletion(
+		carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			return action.ActionSecrets(cmd, cmd.Flag("org").Value.String())
+		}),
+	)
 
 	return cmd
 }

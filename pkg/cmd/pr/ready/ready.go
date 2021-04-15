@@ -67,11 +67,9 @@ func NewCmdReady(f *cmdutil.Factory, runF func(*ReadyOptions) error) *cobra.Comm
 		},
 	}
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true, DraftOnly: true}),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true, DraftOnly: true}),
+	)
 
 	return cmd
 }

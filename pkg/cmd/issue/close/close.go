@@ -50,11 +50,9 @@ func NewCmdClose(f *cmdutil.Factory, runF func(*CloseOptions) error) *cobra.Comm
 		},
 	}
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionIssues(cmd, action.IssueOpts{Open: true}),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionIssues(cmd, action.IssueOpts{Open: true}),
+	)
 
 	return cmd
 }

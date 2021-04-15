@@ -89,11 +89,9 @@ func NewCmdView(f *cmdutil.Factory, runF func(*ViewOptions) error) *cobra.Comman
 	cmd.Flags().BoolVarP(&opts.Comments, "comments", "c", false, "View pull request comments")
 	cmdutil.AddJSONFlags(cmd, &opts.Exporter, api.PullRequestFields)
 
-	cmdutil.DeferCompletion(func() {
-		carapace.Gen(cmd).PositionalCompletion(
-			action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
-		)
-	})
+	carapace.Gen(cmd).PositionalCompletion(
+		action.ActionPullRequests(cmd, action.PullRequestOpts{Open: true}),
+	)
 
 	return cmd
 }
