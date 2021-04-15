@@ -15,7 +15,7 @@ type workflow struct {
 }
 
 type WorkflowOpts struct {
-	Active   bool
+	Enabled  bool
 	Disabled bool
 }
 
@@ -34,7 +34,7 @@ func ActionWorkflows(cmd *cobra.Command, opts WorkflowOpts) carapace.Action {
 		return ApiV3Action(cmd, fmt.Sprintf(`repos/%v/%v/actions/workflows`, repo.RepoOwner(), repo.RepoName()), &queryResult, func() carapace.Action {
 			vals := make([]string, 0)
 			for _, workflow := range queryResult.Workflows {
-				if opts.Active && workflow.State == "active" ||
+				if opts.Enabled && workflow.State == "active" ||
 					opts.Disabled && workflow.State != "active" {
 					vals = append(vals, strconv.Itoa(workflow.Id), workflow.Name)
 				}
