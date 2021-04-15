@@ -37,6 +37,7 @@ func ActionWorkflows(cmd *cobra.Command, opts WorkflowOpts) carapace.Action {
 				if opts.Enabled && workflow.State == "active" ||
 					opts.Disabled && workflow.State != "active" {
 					vals = append(vals, strconv.Itoa(workflow.Id), workflow.Name)
+					vals = append(vals, workflow.Name, strconv.Itoa(workflow.Id))
 				}
 			}
 			return carapace.ActionValuesDescribed(vals...)
