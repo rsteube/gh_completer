@@ -17,6 +17,8 @@ type workflow struct {
 type WorkflowOpts struct {
 	Enabled  bool
 	Disabled bool
+	Id       bool
+	Name     bool
 }
 
 type workFlowQuery struct {
@@ -36,8 +38,12 @@ func ActionWorkflows(cmd *cobra.Command, opts WorkflowOpts) carapace.Action {
 			for _, workflow := range queryResult.Workflows {
 				if opts.Enabled && workflow.State == "active" ||
 					opts.Disabled && workflow.State != "active" {
-					vals = append(vals, strconv.Itoa(workflow.Id), workflow.Name)
-					vals = append(vals, workflow.Name, strconv.Itoa(workflow.Id))
+					if opts.Id {
+						vals = append(vals, strconv.Itoa(workflow.Id), workflow.Name)
+					}
+					if opts.Name {
+						vals = append(vals, workflow.Name, strconv.Itoa(workflow.Id))
+					}
 				}
 			}
 			return carapace.ActionValuesDescribed(vals...)

@@ -86,7 +86,7 @@ func NewCmdView(f *cmdutil.Factory, runF func(*ViewOptions) error) *cobra.Comman
 	})
 
 	carapace.Gen(cmd).PositionalCompletion(
-		action.ActionWorkflows(cmd, action.WorkflowOpts{Enabled: true}),
+		action.ActionWorkflows(cmd, action.WorkflowOpts{Enabled: true, Id: true, Name: true}),
 	)
 
 	return cmd

@@ -55,7 +55,7 @@ func NewCmdEnable(f *cmdutil.Factory, runF func(*EnableOptions) error) *cobra.Co
 	}
 
 	carapace.Gen(cmd).PositionalCompletion(
-		action.ActionWorkflows(cmd, action.WorkflowOpts{Disabled: true}),
+		action.ActionWorkflows(cmd, action.WorkflowOpts{Disabled: true, Id: true, Name: true}),
 	)
 
 	return cmd

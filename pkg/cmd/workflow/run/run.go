@@ -135,7 +135,7 @@ func NewCmdRun(f *cmdutil.Factory, runF func(*RunOptions) error) *cobra.Command 
 	})
 
 	carapace.Gen(cmd).PositionalCompletion(
-		action.ActionWorkflows(cmd, action.WorkflowOpts{Enabled: true}),
+		action.ActionWorkflows(cmd, action.WorkflowOpts{Enabled: true, Id: true, Name: true}),
 	)
 
 	return cmd
