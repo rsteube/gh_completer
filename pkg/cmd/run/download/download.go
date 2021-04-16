@@ -106,7 +106,7 @@ func NewCmdDownload(f *cmdutil.Factory, runF func(*DownloadOptions) error) *cobr
 		"dir": carapace.ActionDirectories(),
 		"name": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
 			if len(c.Args) > 0 {
-				return action.ActionWorkflowArtifacts(cmd, c.Args[0])
+				return action.ActionWorkflowArtifactNames(cmd, c.Args[0])
 			}
 			return carapace.ActionValues()
 		}),

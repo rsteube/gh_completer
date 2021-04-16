@@ -80,21 +80,23 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 		for key := range matchedSegments {
 			switch key {
 			// TODO completion for other placeholders
+			case "{archive_format}":
+				actions = append(actions, carapace.ActionValues("zip").Invoke(c))
+			case "{artifact_id}":
+				fakeRepoFlag(cmd, matchedData["{owner}"], matchedData["{repo}"])
+				actions = append(actions, ActionWorkflowArtifactIds(cmd, "").Invoke(c))
 			case "{assignee}":
-				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
-				cmd.Flag("repo").Changed = true
+				fakeRepoFlag(cmd, matchedData["{owner}"], matchedData["{repo}"])
 				actions = append(actions, ActionAssignableUsers(cmd).Invoke(c))
 			case "{branch}":
-				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
-				cmd.Flag("repo").Changed = true
+				fakeRepoFlag(cmd, matchedData["{owner}"], matchedData["{repo}"])
 				actions = append(actions, ActionBranches(cmd).Invoke(c))
 			case "{gist_id}":
 				actions = append(actions, ActionGists(cmd).Invoke(c))
 			case "{gitignore_name}":
 				actions = append(actions, ActionGitignoreTemplates(cmd).Invoke(c))
 			case "{issue_number}":
-				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
-				cmd.Flag("repo").Changed = true
+				fakeRepoFlag(cmd, matchedData["{owner}"], matchedData["{repo}"])
 				actions = append(actions, ActionIssues(cmd, IssueOpts{Open: true, Closed: true}).Invoke(c))
 			case "{owner}":
 				if strings.HasPrefix(c.CallbackValue, ":") {
@@ -107,8 +109,7 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 			case "{package_type}":
 				actions = append(actions, ActionPackageTypes().Invoke(c))
 			case "{pull_number}":
-				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
-				cmd.Flag("repo").Changed = true
+				fakeRepoFlag(cmd, matchedData["{owner}"], matchedData["{repo}"])
 				actions = append(actions, ActionPullRequests(cmd, PullRequestOpts{Open: true, Closed: true, Merged: true}).Invoke(c))
 			case "{repo}":
 				if strings.HasPrefix(c.CallbackValue, ":") {
@@ -117,11 +118,13 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 					actions = append(actions, ActionRepositories(cmd, matchedData["{owner}"], c.CallbackValue).Invoke(c))
 				}
 			case "{tag}": // only used with releases
-				cmd.Flags().String("repo", fmt.Sprintf("%v/%v", matchedData["{owner}"], matchedData["{repo}"]), "fake repo flag")
-				cmd.Flag("repo").Changed = true
+				fakeRepoFlag(cmd, matchedData["{owner}"], matchedData["{repo}"])
 				actions = append(actions, ActionReleases(cmd).Invoke(c))
 			case "{username}":
 				actions = append(actions, ActionUsers(cmd, &UserOpts{Users: true}).Invoke(c))
+			case "{workflow_id}":
+				fakeRepoFlag(cmd, matchedData["{owner}"], matchedData["{repo}"])
+				actions = append(actions, ActionWorkflows(cmd, WorkflowOpts{Enabled: true, Disabled: true, Id: true}).Invoke(c))
 			default:
 				// static value or placeholder not yet handled
 				actions = append(actions, carapace.ActionValues(key).Invoke(c))
@@ -136,4 +139,9 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 			return actions[0].Merge(actions[1:]...).ToA()
 		}
 	})
+}
+
+func fakeRepoFlag(cmd *cobra.Command, owner, repo string) {
+	cmd.Flags().String("repo", fmt.Sprintf("%v/%v", owner, repo), "fake repo flag")
+	cmd.Flag("repo").Changed = true
 }

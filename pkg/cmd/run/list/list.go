@@ -64,7 +64,7 @@ func NewCmdList(f *cmdutil.Factory, runF func(*ListOptions) error) *cobra.Comman
 	cmd.Flags().StringVarP(&opts.WorkflowSelector, "workflow", "w", "", "Filter runs by workflow")
 
 	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
-		"workflow": action.ActionWorkflows(cmd, action.WorkflowOpts{Enabled: true}),
+		"workflow": action.ActionWorkflows(cmd, action.WorkflowOpts{Enabled: true, Id: true, Name: true}),
 	})
 
 	return cmd
