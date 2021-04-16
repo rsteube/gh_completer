@@ -102,6 +102,16 @@ func NewCmdDownload(f *cmdutil.Factory, runF func(*DownloadOptions) error) *cobr
 		// TODO name
 	})
 
+	carapace.Gen(cmd).FlagCompletion(carapace.ActionMap{
+		"dir": carapace.ActionDirectories(),
+		"name": carapace.ActionCallback(func(c carapace.Context) carapace.Action {
+			if len(c.Args) > 0 {
+				return action.ActionWorkflowArtifacts(cmd, c.Args[0])
+			}
+			return carapace.ActionValues()
+		}),
+	})
+
 	carapace.Gen(cmd).PositionalCompletion(
 		action.ActionWorkflowRuns(cmd, action.RunOpts{Successful: true}),
 	)
