@@ -120,6 +120,8 @@ func ActionApiV3Paths(cmd *cobra.Command) carapace.Action {
 			case "{tag}": // only used with releases
 				fakeRepoFlag(cmd, matchedData["{owner}"], matchedData["{repo}"])
 				actions = append(actions, ActionReleases(cmd).Invoke(c))
+			case "{template_owner}": // ignore this as it is already provided by `{owner}`
+			case "{template_repo}": // ignore this as it is already provided by `{repo}`
 			case "{username}":
 				actions = append(actions, ActionUsers(cmd, &UserOpts{Users: true}).Invoke(c))
 			case "{workflow_id}":
