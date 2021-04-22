@@ -41,7 +41,7 @@ func ActionWorkflowRuns(cmd *cobra.Command, opts RunOpts) carapace.Action {
 		return ApiV3Action(cmd, fmt.Sprintf(`repos/%v/%v/actions/runs`, repo.RepoOwner(), repo.RepoName()), &queryResult, func() carapace.Action {
 			vals := make([]string, 0)
 			for _, run := range queryResult.WorkflowRuns {
-				ago := time.Now().Sub(run.CreatedAt)
+				ago := time.Since(run.CreatedAt)
 				if opts.All ||
 					(opts.InProgress && run.Status == "in_progress") ||
 					(opts.Failed && run.Status == "completed" && run.Conclusion != "success") ||

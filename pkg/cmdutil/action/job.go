@@ -34,7 +34,7 @@ func ActionWorkflowJobs(cmd *cobra.Command, runId string, opts RunOpts) carapace
 		return ApiV3Action(cmd, fmt.Sprintf(`repos/%v/%v/actions/runs/%v/jobs`, repo.RepoOwner(), repo.RepoName(), runId), &queryResult, func() carapace.Action {
 			vals := make([]string, 0)
 			for _, job := range queryResult.Jobs {
-				ago := time.Now().Sub(job.StartedAt)
+				ago := time.Since(job.StartedAt)
 				vals = append(vals, strconv.Itoa(job.Id), fmt.Sprintf("%v %v", job.Name, utils.FuzzyAgo(ago)))
 			}
 			return carapace.ActionValuesDescribed(vals...)

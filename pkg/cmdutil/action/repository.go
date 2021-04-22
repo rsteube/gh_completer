@@ -5,6 +5,7 @@ import (
 
 	"github.com/cli/cli/internal/ghrepo"
 	"github.com/rsteube/carapace"
+	"github.com/rsteube/carapace/pkg/cache"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +24,7 @@ type repositoryQuery struct {
 	}
 }
 
-func repoCacheKey(cmd *cobra.Command) func() (string, error) { // TODO public CacheKey access from carapace
+func repoCacheKey(cmd *cobra.Command) cache.Key {
 	return func() (string, error) {
 		if repo, err := repoOverride(cmd); err != nil {
 			return "", err
