@@ -1,12 +1,10 @@
 package action
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
-	"os/exec"
 	"strings"
 
 	"github.com/cli/cli/git"
@@ -44,17 +42,12 @@ func ApiV3Action(cmd *cobra.Command, query string, v interface{}, transform func
 		if repo, err := repoOverride(cmd); err != nil {
 			return carapace.ActionMessage(err.Error())
 		} else {
-			var stderr bytes.Buffer
-			cmd := exec.Command("gh", "api", "--hostname", repo.RepoHost(), query)
-			cmd.Stderr = &stderr
-			if output, err := cmd.Output(); err != nil {
-				return carapace.ActionMessage("failed to execute query:" + stderr.String())
-			} else {
+			return carapace.ActionExecCommand("gh", "api", "--hostname", repo.RepoHost(), query)(func(output []byte) carapace.Action {
 				if err := json.Unmarshal(output, &v); err != nil {
 					return carapace.ActionMessage("failed to unmarshall response: " + err.Error())
 				}
 				return transform()
-			}
+			})
 		}
 	})
 }
@@ -76,17 +69,12 @@ func GraphQlAction(cmd *cobra.Command, query string, v interface{}, transform fu
 		if repo, err := repoOverride(cmd); err != nil {
 			return carapace.ActionMessage(err.Error())
 		} else {
-			var stderr bytes.Buffer
-			cmd := exec.Command("gh", "api", "--hostname", repo.RepoHost(), "--header", "Accept: application/vnd.github.merge-info-preview+json", "graphql", "-F", "owner="+repo.RepoOwner(), "-F", "repo="+repo.RepoName(), "-f", fmt.Sprintf("query=query%v {%v}", queryParams, query))
-			cmd.Stderr = &stderr
-			if output, err := cmd.Output(); err != nil {
-				return carapace.ActionMessage("failed to execute query:" + stderr.String())
-			} else {
+			return carapace.ActionExecCommand("gh", "api", "--hostname", repo.RepoHost(), "--header", "Accept: application/vnd.github.merge-info-preview+json", "graphql", "-F", "owner="+repo.RepoOwner(), "-F", "repo="+repo.RepoName(), "-f", fmt.Sprintf("query=query%v {%v}", queryParams, query))(func(output []byte) carapace.Action {
 				if err := json.Unmarshal(output, &v); err != nil {
 					return carapace.ActionMessage("failed to unmarshall response: " + err.Error())
 				}
 				return transform()
-			}
+			})
 		}
 	})
 }
