@@ -1,3 +1,11 @@
+# Moved to carapace-bin
+
+Completion moved to [carapace-bin](https://github.com/rsteube/carapace-bin) as external completer:
+```sh
+carapace gh [bash|elvish|fish|oil|xonsh|zsh]
+```
+
+
 # GitHub CLI
 
 [gh](https://github.com/cli/cli) with dynamic completion
